@@ -33,17 +33,36 @@ O projeto é dividido em duas partes principais:
 
 ---
 
+## Contribuição
+- Todos os colaboradores devem seguir boas práticas de código, padronização e acessibilidade.  
+- Antes de enviar PRs, teste o projeto para garantir que todas as funcionalidades estejam funcionando corretamente.  
+
+### Pre-commit e formatação de código
+O projeto utiliza **pre-commit hooks** para manter o padrão de código com as seguintes ferramentas:
+
+- **black** → formatação de código Python  
+- **isort** → organização de imports  
+- **flake8** → verificação de lint  
+
+#### Como usar os comandos de pre-commit
+
+1. **Verificar o código antes de commitar (sem modificar arquivos automaticamente):**
+
+```bash
+pre-commit run --all-files
+```
+
+2. **Formatar o código automaticamente (Windows):**
+
+```bash
+format_code.bat || 
+.\format_code.bat
+
+```
+---
+
 ## Licença e uso
 
 - Este projeto **não deve ser comercializado**, vendido ou usado para fins lucrativos.  
 - É destinado **apenas para fins educacionais e de pesquisa**.  
 - Qualquer contribuição deve respeitar a missão de acessibilidade do BlindDS.
-
----
-
-## Contribuição
-- Todos os colaboradores devem seguir boas práticas de código, padronização e acessibilidade.  
-- Antes de enviar PRs, teste o projeto para garantir que todas as funcionalidades estejam funcionando corretamente.
-
----
-
