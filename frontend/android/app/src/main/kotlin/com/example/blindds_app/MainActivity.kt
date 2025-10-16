@@ -1,4 +1,4 @@
-package com.example.frontend
+package com.example.blindds_app
 
 import io.flutter.embedding.android.FlutterActivity
 
