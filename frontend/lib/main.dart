@@ -1,6 +1,7 @@
+import 'package:blindds_app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:blindds_app/pages/login_screen.dart';
-import 'package:blindds_app/ui/colors/colors_styles.dart';
+import 'package:blindds_app/ui/colors/app_colors.dart';
+import 'package:blindds_app/routes/app_pages_routes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,10 +32,11 @@ class MyApp extends StatelessWidget {
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(
-    seedColor: AppColors.bluePrimary, // gera um esquema baseado nessa cor
-  ),
+          seedColor: AppColors.bluePrimary, // gera um esquema baseado nessa cor
+        ),
       ),
-      home: const LoginScreen(),
+      initialRoute: AppRoutes.home,
+      routes: AppRoutePages.routes,
     );
   }
 }
