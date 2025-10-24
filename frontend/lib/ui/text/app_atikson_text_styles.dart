@@ -3,7 +3,6 @@ import 'app_font_weights.dart';
 import 'app_font_sizes.dart';
 
 class PrimaryTextStyles {
-
   static const TextStyle h1Bold = TextStyle(
     fontFamily: 'AtiksonHiperlegible',
     fontSize: AppFontSizes.extraLarge, // 40
@@ -41,7 +40,6 @@ class PrimaryTextStyles {
     fontWeight: AppFontWeight.regular,
   );
 
-
   static const TextStyle h2Bold = TextStyle(
     fontFamily: 'AtiksonHiperlegible',
     fontSize: AppFontSizes.large, // 32
@@ -54,7 +52,6 @@ class PrimaryTextStyles {
     fontWeight: AppFontWeight.light,
   );
 
-
   static const TextStyle h3Bold = TextStyle(
     fontFamily: 'AtiksonHiperlegible',
     fontSize: AppFontSizes.medium, // 24
@@ -66,5 +63,4 @@ class PrimaryTextStyles {
     fontSize: AppFontSizes.medium,
     fontWeight: AppFontWeight.light,
   );
-
 }
