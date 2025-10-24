@@ -2,11 +2,11 @@ class AppDimensions {
   // ===========================
   // Espaçamento entre widgets (padding/margin)
   // ===========================
-  static const double spaceXS = 4.0;
-  static const double spaceS = 8.0;
-  static const double spaceM = 16.0;
-  static const double spaceL = 24.0;
-  static const double spaceXL = 32.0;
+  static const double spaceXS = 8.0;
+  static const double spaceS = 16.0;
+  static const double spaceM = 24.0;
+  static const double spaceL = 32.0;
+  static const double spaceXL = 40.0;
 
   // ===========================
   // Bordas / Radius
@@ -23,6 +23,17 @@ class AppDimensions {
 
   static const double cardHeight = 120.0;
   static const double cardWidth = 300.0;
+
+  // Altura e largura para campos de texto
+  static const double textFieldHeight = 56.0;
+  static const double textFieldWidth = 350.0;
+
+  // ===========================
+  // Bordas / espessura de BorderSide
+  // ===========================
+  static const double borderWidthThin = 1.5;
+  static const double borderWidthThick = 2.0;
+  static const double borderWidthButton = 1.5;
 
   // ===========================
   // Ícones

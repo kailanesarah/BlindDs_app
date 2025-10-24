@@ -3,10 +3,9 @@ import 'app_font_weights.dart';
 import 'app_font_sizes.dart';
 
 class SecondaryTextStyles {
-
   static const TextStyle bodyLight = TextStyle(
     fontFamily: 'Lexend',
-    fontSize: AppFontSizes.small, // 18
+    fontSize: AppFontSizes.small,
     fontWeight: AppFontWeight.light,
   );
 
