@@ -5,7 +5,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-tm_^3s2*dgbcf&2=_=$ekyj4n_jdsbg9gzckb8g688savwn$!"
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "10.0.2.2"]
+
 
 # Modelo customizado
 AUTH_USER_MODEL = "users.CustomUser"
@@ -18,7 +19,7 @@ REST_USE_JWT = True  # Habilita JWT
 # REST_AUTH_TOKEN_MODEL = None  # Comentado, pois queremos manter a Key também
 
 # -----------------------------
-# Aplicativos instalados
+# Apps instaladas
 # -----------------------------
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -124,7 +125,7 @@ REST_FRAMEWORK = {
 # Serializer customizado para registro
 # -----------------------------
 REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": "users.serializers.CustomRegisterSerializer",
+    "REGISTER_SERIALIZER": "authentication.serializers.CustomRegisterSerializer",
 }
 
 # -----------------------------
