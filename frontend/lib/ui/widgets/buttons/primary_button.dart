@@ -7,7 +7,7 @@ class PrimaryButton extends StatelessWidget {
   final String text;
   final Color? backgroundColor;
   final Color? textColor;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const PrimaryButton({
     super.key,
@@ -19,26 +19,35 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed, // Função passada pelo construtor
-      style: ElevatedButton.styleFrom(
-        // Estilo visual do botão
-        minimumSize: Size(
-          AppDimensions.buttonWidth,
-          AppDimensions.buttonHeight,
-        ),
-        padding: EdgeInsets.symmetric(horizontal: AppDimensions.spaceM),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimensions.radiusM),
-        ),
-        backgroundColor: backgroundColor ?? AppColors.bluePrimary,
-        foregroundColor: textColor ?? AppColors.grayDefault,
-      ),
-      child: Text(
-        // Conteúdo do botão (o que fica dentro)
-        text, // O texto passado pelo construtor
-        style: SecondaryTextStyles.bodyBold.copyWith(
-          color: textColor ?? AppColors.grayDefault, // garante cor do texto
+    return Semantics(
+      // Garante que o leitor de tela entenda que este é um botão
+      button: true,
+      label: text,
+      hint: 'Pressione para executar a ação: $text',
+      enabled: onPressed != null,
+      child: FocusableActionDetector(
+        autofocus: false,
+        descendantsAreFocusable: false,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(
+              AppDimensions.buttonWidth,
+              AppDimensions.buttonHeight,
+            ),
+            padding: EdgeInsets.symmetric(horizontal: AppDimensions.spaceM),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppDimensions.radiusM),
+            ),
+            backgroundColor: backgroundColor ?? AppColors.bluePrimary,
+            foregroundColor: textColor ?? AppColors.grayDefault,
+          ),
+          child: Text(
+            text,
+            style: SecondaryTextStyles.bodyBold.copyWith(
+              color: textColor ?? AppColors.grayDefault,
+            ),
+          ),
         ),
       ),
     );

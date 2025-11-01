@@ -11,28 +11,34 @@ class GoogleSignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        // Estilo visual do botão
-        minimumSize: Size(
-          AppDimensions.buttonWidth,
-          AppDimensions.buttonHeight,
+    return Semantics(
+      button: true,
+      label: 'Login com Google',
+      hint: 'Pressione para entrar usando sua conta Google',
+      child: FocusableActionDetector(
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(
+              AppDimensions.buttonWidth,
+              AppDimensions.buttonHeight,
+            ),
+            padding: EdgeInsets.symmetric(horizontal: AppDimensions.spaceM),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppDimensions.radiusM),
+            ),
+            backgroundColor: AppColors.grayDisabled,
+            foregroundColor: AppColors.grayBlackSecondary,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FaIcon(FontAwesomeIcons.google),
+              SizedBox(width: AppDimensions.iconL),
+              Text('Login com o Google', style: SecondaryTextStyles.bodyBold),
+            ],
+          ),
         ),
-        padding: EdgeInsets.symmetric(horizontal: AppDimensions.spaceM),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimensions.radiusM),
-        ),
-        backgroundColor: AppColors.grayDisabled,
-        foregroundColor: AppColors.grayBlackSecondary,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FaIcon(FontAwesomeIcons.google),
-          SizedBox(width: AppDimensions.iconL),
-          Text('Login com o Google', style: SecondaryTextStyles.bodyBold),
-        ],
       ),
     );
   }
