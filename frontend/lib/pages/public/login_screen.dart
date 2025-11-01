@@ -19,15 +19,21 @@ class LoginScreen extends StatelessWidget {
             minHeight: MediaQuery.of(context).size.height,
           ),
           child: IntrinsicHeight(
-            child: CenteredColumn(
-              children: [
-                Header(
-                  title: "Bem-vindo de volta!",
-                  subtitle: "Acesse sua conta e comece a aprender estruturas de dados.",
-                ),
-                SizedBox(height: AppDimensions.spaceXL),
-                LoginForm(),
-              ],
+            child: Semantics(
+              container: true,
+              label:
+                  'Tela de login. Informe seu e-mail e senha para acessar a sua conta.',
+              child: CenteredColumn(
+                children: [
+                  Header(
+                    title: "Bem-vindo de volta!",
+                    subtitle:
+                        "Acesse sua conta e comece a aprender estruturas de dados.",
+                  ),
+                  SizedBox(height: AppDimensions.spaceXL),
+                  LoginForm(),
+                ],
+              ),
             ),
           ),
         ),
