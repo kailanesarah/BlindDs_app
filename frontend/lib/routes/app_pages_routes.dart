@@ -6,7 +6,6 @@ import 'package:blindds_app/pages/public/welcome_screen.dart';
 import 'package:blindds_app/pages/public/login_screen.dart';
 import 'package:blindds_app/pages/private/mode_selection_screen.dart';
 
-
 class AppRoutePages {
   static Map<String, WidgetBuilder> routes = {
     AppRoutes.home: (context) => const WelcomeScreen(),
