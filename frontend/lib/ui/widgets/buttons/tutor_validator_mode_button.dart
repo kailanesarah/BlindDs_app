@@ -19,39 +19,47 @@ class TutorValidatorModeButton extends StatefulWidget {
 }
 
 class _TutorValidatorModeButtonState extends State<TutorValidatorModeButton> {
-  bool _isActive = false; 
+  bool _isActive = false;
 
   void _toggleActive() {
     setState(() {
-      _isActive = !_isActive; 
+      _isActive = !_isActive;
     });
 
     // chama callback externo, se houver
-    if (widget.onPressed != null) {
-      widget.onPressed!();
-    }
+    widget.onPressed?.call();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: _toggleActive,
-      style: ElevatedButton.styleFrom(
-        minimumSize: const Size(350, 100),
-        backgroundColor: _isActive ? AppColors.bluePrimary : AppColors.grayDisabled,
-        padding: EdgeInsets.symmetric(horizontal: AppDimensions.spaceM),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimensions.radiusM),
-          side: BorderSide(
-            width: 1.2,
+    return Semantics(
+      button: true,
+      selected: _isActive,
+      label: widget.text,
+      hint: _isActive ? 'Modo selecionado' : 'Modo não selecionado',
+      child: FocusableActionDetector(
+        child: ElevatedButton(
+          onPressed: _toggleActive,
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(350, 100),
+            backgroundColor: _isActive
+                ? AppColors.bluePrimary
+                : AppColors.grayDisabled,
+            padding: EdgeInsets.symmetric(horizontal: AppDimensions.spaceM),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppDimensions.radiusM),
+              side: const BorderSide(width: 1.2),
+            ),
+            elevation: _isActive ? 4 : 0,
           ),
-        ),
-        elevation: _isActive ? 4 : 0,
-      ),
-      child: Text(
-        widget.text,
-        style: SecondaryTextStyles.bodyBold.copyWith(
-          color: _isActive ? AppColors.grayDefault : AppColors.grayBlackSecondary,
+          child: Text(
+            widget.text,
+            style: SecondaryTextStyles.bodyBold.copyWith(
+              color: _isActive
+                  ? AppColors.grayDefault
+                  : AppColors.grayBlackSecondary,
+            ),
+          ),
         ),
       ),
     );
