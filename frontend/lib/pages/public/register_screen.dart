@@ -19,12 +19,21 @@ class RegisterScreen extends StatelessWidget {
             minHeight: MediaQuery.of(context).size.height,
           ),
           child: IntrinsicHeight(
-            child: CenteredColumn( // vertical
-              children: [
-                Header(title: "Faça seu cadastro!", subtitle: "Cadastre-se e inicie seu aprendizado agora mesmo."),
-                SizedBox(height: AppDimensions.spaceXL),
-                RegisterForm(),
-              ],
+            child: Semantics(
+              container: true,
+              label:
+                  'Tela de cadastro de usuário. Preencha nome, e-mail, senha e selecione seu tipo de usuário para criar a conta.',
+              child: CenteredColumn(
+                children: [
+                  Header(
+                    title: "Faça seu cadastro!",
+                    subtitle:
+                        "Cadastre-se e inicie seu aprendizado agora mesmo.",
+                  ),
+                  SizedBox(height: AppDimensions.spaceXL),
+                  RegisterForm(),
+                ],
+              ),
             ),
           ),
         ),

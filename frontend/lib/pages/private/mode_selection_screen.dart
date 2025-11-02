@@ -11,23 +11,36 @@ class ModeSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainLayout(
-      bodyContent: CenteredColumn(
-        children: [
-          Header(
-            title: 'Atividade liberada!',
-            subtitle: 'Selecione o modo de interação.',
-          ),
-          SizedBox(height: AppDimensions.spaceXL),
-          TutorValidatorModeButton(
-            text: 'Modo Tutor',
-            onPressed: () {},
-          ),
-          SizedBox(height: AppDimensions.spaceM),
-          TutorValidatorModeButton(
-            text: 'Modo Validador',
-            onPressed: () {},
-          ),
-        ],
+      bodyContent: Semantics(
+        container: true,
+        label:
+            'Tela de seleção de modo. '
+            'Aqui o usuário escolhe entre Modo Tutor ou Modo Validador para continuar a atividade.',
+        child: CenteredColumn(
+          children: [
+            const Header(
+              title: 'Atividade liberada!',
+              subtitle: 'Selecione o modo de interação.',
+            ),
+            const SizedBox(height: AppDimensions.spaceXL),
+
+            TutorValidatorModeButton(
+              text: 'Modo Tutor',
+              onPressed: () {
+                // TODO: lógica ou navegação para modo tutor
+              },
+            ),
+
+            const SizedBox(height: AppDimensions.spaceM),
+
+            TutorValidatorModeButton(
+              text: 'Modo Validador',
+              onPressed: () {
+                // TODO: lógica ou navegação para modo validador
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

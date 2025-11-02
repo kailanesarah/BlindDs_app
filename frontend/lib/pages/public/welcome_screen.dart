@@ -16,30 +16,38 @@ class WelcomeScreen extends StatelessWidget {
       appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppDimensions.spaceM),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            LoginBanner(),
-            SizedBox(height: AppDimensions.spaceXL),
-            Header(
-              title: 'Bem vindo(a)!',
-              subtitle: 'Dê o primeiro passo: cadastre-se ou faça login e comece a aprender hoje!',
-            ),
-            SizedBox(height: AppDimensions.spaceXL),
-            PrimaryButton(
-              text: 'Cadastre-se',
-              onPressed: () => {
-                Navigator.pushNamed(context, AppRoutes.register),
-              },
-            ),
-            SizedBox(height: AppDimensions.spaceM),
-            PrimaryButton(
-              text: 'Faça seu Login',
-              backgroundColor: AppColors.grayDisabled,
-              textColor: AppColors.bluePrimary,
-              onPressed: () => {Navigator.pushNamed(context, AppRoutes.login)},
-            ),
-          ],
+        child: Semantics(
+          container: true,
+          label:
+              'Tela de boas-vindas. O usuário pode optar por se cadastrar ou fazer login para acessar o aplicativo.',
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LoginBanner(),
+              SizedBox(height: AppDimensions.spaceXL),
+              Header(
+                title: 'Bem vindo(a)!',
+                subtitle:
+                    'Dê o primeiro passo: cadastre-se ou faça login e comece a aprender hoje!',
+              ),
+              SizedBox(height: AppDimensions.spaceXL),
+              PrimaryButton(
+                text: 'Cadastre-se',
+                onPressed: () => {
+                  Navigator.pushNamed(context, AppRoutes.register),
+                },
+              ),
+              SizedBox(height: AppDimensions.spaceM),
+              PrimaryButton(
+                text: 'Faça seu Login',
+                backgroundColor: AppColors.grayDisabled,
+                textColor: AppColors.bluePrimary,
+                onPressed: () => {
+                  Navigator.pushNamed(context, AppRoutes.login),
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
