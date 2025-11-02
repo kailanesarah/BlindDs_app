@@ -12,24 +12,29 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          title,
-          style: PrimaryTextStyles.h1Medium.copyWith(
-            color: AppColors.grayBlackSecondary,
+    return Semantics(
+      container: true,
+      header: true,
+      label: '$title. $subtitle',
+      child: Column(
+        children: [
+          Text(
+            title,
+            style: PrimaryTextStyles.h1Medium.copyWith(
+              color: AppColors.grayBlackSecondary,
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: AppDimensions.spaceS),
-        Text(
-          subtitle,
-          style: SecondaryTextStyles.bodyRegular.copyWith(
-            color: AppColors.grayBlackSecondary,
+          const SizedBox(height: AppDimensions.spaceS),
+          Text(
+            subtitle,
+            style: SecondaryTextStyles.bodyRegular.copyWith(
+              color: AppColors.grayBlackSecondary,
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
