@@ -1,1 +1,1 @@
-web: gunicorn cors.wsgi
+web: gunicorn api.cors.wsgi
