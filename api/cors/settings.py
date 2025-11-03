@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "users",
+    "api.users",
+    "api.authentication",
     # DRF + autenticação
     "rest_framework",
     "rest_framework.authtoken",  # Mantém para Key
