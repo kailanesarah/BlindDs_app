@@ -1,19 +1,21 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+import 'package:blindds_app/utils/base_provider.dart';
+import 'package:blindds_app/utils/helpers/dio_error_helper.dart';
+import 'package:blindds_app/utils/helpers/generic_error_helper.dart';
+import 'package:blindds_app/utils/validators.dart';
 import 'package:blindds_app/providers/session/load_session_provider.dart';
 import 'package:blindds_app/providers/session/register_session_provider.dart';
 import 'package:blindds_app/services/login_service.dart';
-import 'package:blindds_app/utils/validators.dart';
 import 'package:provider/provider.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 
-class LoginProvider with ChangeNotifier {
+class LoginProvider extends BaseProvider {
   String email = '';
   String password = '';
 
   String? emailError;
   String? passwordError;
-  String? errorMessage;
-  bool isLoading = false;
 
   final LoginService _loginService;
   final RegisterSessionProvider _registerSessionProvider;
@@ -27,47 +29,52 @@ class LoginProvider with ChangeNotifier {
   Future<bool> login(BuildContext context) async {
     emailError = Validators.validateEmail(email);
     passwordError = Validators.validatePassword(password);
-    errorMessage = null;
+    clearError();
 
     if (emailError != null || passwordError != null) {
       notifyListeners();
       return false;
     }
 
-    isLoading = true;
-    notifyListeners();
+    setLoading(true);
 
     try {
-      final response = await _loginService.loginUser(
+      final Response response = await _loginService.loginUser(
         email: email,
         password: password,
       );
 
-      isLoading = false;
-
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+        final data = response.data is Map
+            ? response.data
+            : jsonDecode(response.data);
+
+        // Salva e atualiza sessão
         await _registerSessionProvider.saveSession(data);
 
-        // Atualiza LoadSessionProvider
         final loadSession = Provider.of<LoadSessionProvider>(
           context,
           listen: false,
         );
         loadSession.updateSession(data);
-        notifyListeners();
 
+        setLoading(false);
         return true;
       } else {
-        final body = jsonDecode(response.body);
-        errorMessage = body['detail'] ?? 'Login falhou';
-        notifyListeners();
+        final body = response.data is Map
+            ? response.data
+            : jsonDecode(response.data);
+        setError(body['detail'] ?? 'Falha ao fazer login.');
+        setLoading(false);
         return false;
       }
+    } on DioException catch (e) {
+      setError(DioErrorHelper.handle(e));
+      setLoading(false);
+      return false;
     } catch (e) {
-      isLoading = false;
-      errorMessage = e.toString();
-      notifyListeners();
+      setError(GenericErrorHelper.handle(e));
+      setLoading(false);
       return false;
     }
   }
