@@ -4,7 +4,6 @@ import 'package:blindds_app/providers/auth/login_provider.dart';
 import 'package:blindds_app/routes/app_routes.dart';
 import 'package:blindds_app/ui/widgets/buttons/primary_button.dart';
 import 'package:blindds_app/ui/widgets/buttons/google_login_button.dart';
-import 'package:blindds_app/ui/widgets/text/text_divider.dart';
 import 'package:blindds_app/ui/dimens/app_dimensions.dart';
 import 'package:blindds_app/ui/widgets/fields/primary_field.dart';
 
