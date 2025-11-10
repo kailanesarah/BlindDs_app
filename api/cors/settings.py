@@ -6,6 +6,8 @@ import firebase_admin
 from firebase_admin import credentials
 
 load_dotenv()
+DJANGO_AUTH_HOST = os.getenv("DJANGO_AUTH_HOST")
+DJANGO_AUTH_ORIGIN = os.getenv("DJANGO_AUTH_ORIGIN")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-tm_^3s2*dgbcf&2=_=$ekyj4n_jdsbg9gzckb8g688savwn$!"
