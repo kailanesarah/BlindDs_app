@@ -4,36 +4,34 @@ services:
   # Serviço para a sua API (Backend Django)
   - type: web
     name: BlindDs_app
-    # O Render irá buscar arquivos como Procfile e requirements.txt a partir da raiz.
     rootDir: ./
     plan: starter 
     
-    # ⚠️ Comandos de Build: Executados apenas na primeira implantação ou quando o código muda.
+    # ⚠️ Comandos de Build: CORRIGIDO
     buildCommand: |
       pip install -r requirements.txt
       # Coleta arquivos estáticos (necessário para produção)
       python api/manage.py collectstatic --noinput
-      # Cria as migrações do banco de dados
-      python api/manage.py makemigrations
-      # Roda as migrações do banco de dados
+      
+      # 🚨 APENAS RODA/APLICA as migrações que JÁ FORAM CRIADAS E COMITADAS
       python api/manage.py migrate
     
     # O comando de início (startCommand) é automaticamente lido do Procfile.
     
-    # Variáveis de Ambiente
+    # Variáveis de Ambiente (OK)
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.5 # Use a versão do Python que você está usando
+        value: 3.11.5
       - key: DEBUG
-        value: "False" # 🚨 OBRIGATÓRIO em produção!
+        value: "False"
       - key: SECRET_KEY
-        generateValue: true # Gera uma chave secreta segura para produção
+        generateValue: true
       - key: ALLOWED_HOSTS
-        value: ${RENDER_EXTERNAL_HOSTNAME} # Permite o domínio do Render
+        value: ${RENDER_EXTERNAL_HOSTNAME}
       
-      # 🔗 Conexão com o Banco de Dados no Render
+      # 🔗 Conexão com o Banco de Dados no Render (OK)
       - key: DATABASE_URL
         fromService:
           type: pserv
-          name: blindDS-db # ⬅️ SUBSTITUA PELO NOME REAL DO SEU SERVIÇO DE BD
+          name: blindDS-db
           envVar: DATABASE_URL
