@@ -23,7 +23,6 @@ class CustomRegisterView(CreateAPIView):
                 "email": user.email,
                 "name": user.name,
                 "user_type": user.user_type,
-                "username": user.username,
             }
             return Response(data, status=status.HTTP_201_CREATED)
 
