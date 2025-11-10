@@ -3,7 +3,7 @@ version: '1'
 services:
   # Serviço para a sua API (Backend Django)
   - type: web
-    name: api
+    name: BlindDs_app
     # O Render irá buscar arquivos como Procfile e requirements.txt a partir da raiz.
     rootDir: ./
     plan: starter 
@@ -33,5 +33,5 @@ services:
       - key: DATABASE_URL
         fromService:
           type: pserv
-          name: seu-db-service # ⬅️ SUBSTITUA PELO NOME REAL DO SEU SERVIÇO DE BD
+          name: blindDS-db # ⬅️ SUBSTITUA PELO NOME REAL DO SEU SERVIÇO DE BD
           envVar: DATABASE_URL
