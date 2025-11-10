@@ -1,5 +1,11 @@
 from datetime import timedelta
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+import firebase_admin
+from firebase_admin import credentials
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -15,8 +21,7 @@ AUTH_USER_MODEL = "users.CustomUser"
 # Configurações do dj-rest-auth / JWT
 # -----------------------------
 REST_USE_JWT = True  # Habilita JWT
-# Não desabilitar TokenModel se quiser Key também
-# REST_AUTH_TOKEN_MODEL = None  # Comentado, pois queremos manter a Key também
+
 
 # -----------------------------
 # Apps instaladas
@@ -41,6 +46,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     "corsheaders",
+    "django.contrib.sites",
 ]
 
 # -----------------------------
@@ -58,7 +64,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "cors.urls"
+ROOT_URLCONF = "api.cors.urls"
 CORS_ALLOW_ALL_ORIGINS = True
 
 TEMPLATES = [
@@ -76,7 +82,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "cors.wsgi.application"
+WSGI_APPLICATION = "api.cors.wsgi.application"
 
 # -----------------------------
 # Banco de dados
@@ -150,3 +156,20 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_VERIFICATION = "none"
+
+
+# settings.py
+
+# -----------------------------
+# Configurações do Social Account Google
+# -----------------------------
+
+
+FIREBASE_CREDENTIALS_PATH = os.path.join(BASE_DIR, "config", "serviceAccountKey.json")
+
+if os.path.exists(FIREBASE_CREDENTIALS_PATH):
+    cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
+    firebase_admin.initialize_app(cred)
+else:
+    # Lógica para ambiente de produção (usando variáveis de ambiente, se necessário)
+    pass
