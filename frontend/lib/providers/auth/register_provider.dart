@@ -1,9 +1,11 @@
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:blindds_app/services/register_service.dart';
+import 'package:blindds_app/utils/base_provider.dart';
+import 'package:blindds_app/utils/helpers/dio_error_helper.dart';
+import 'package:blindds_app/utils/helpers/generic_error_helper.dart';
 import 'package:blindds_app/utils/validators.dart';
+import 'package:blindds_app/services/register_service.dart';
+import 'package:dio/dio.dart';
 
-class RegisterProvider with ChangeNotifier {
+class RegisterProvider extends BaseProvider {
   String name = '';
   String email = '';
   String password = '';
@@ -12,20 +14,20 @@ class RegisterProvider with ChangeNotifier {
   String? nameError;
   String? emailError;
   String? passwordError;
-  String? errorMessage;
-  bool isLoading = false;
 
   final RegisterService _registerService;
 
   RegisterProvider({required RegisterService registerService})
     : _registerService = registerService;
 
+  /// Define o tipo de usuário (ex: aluno, professor, empresa, etc)
   void setUserType(String type) {
     userType = type;
     notifyListeners();
   }
 
-  Future<bool> validateFields() async {
+  /// Valida todos os campos antes do envio
+  bool validateFields() {
     nameError = Validators.validateUsername(name);
     emailError = Validators.validateEmail(email);
     passwordError = Validators.validatePassword(password);
@@ -37,34 +39,37 @@ class RegisterProvider with ChangeNotifier {
     return true;
   }
 
+  /// Envia os dados de registro para o backend
   Future<bool> register() async {
-    isLoading = true;
-    errorMessage = null;
-    notifyListeners();
+    if (!validateFields()) return false;
+
+    setLoading(true);
+    clearError();
 
     try {
-      final response = await _registerService.registerUser(
+      final Response response = await _registerService.registerUser(
         name: name,
         email: email,
         password: password,
         userType: userType,
       );
 
-      isLoading = false;
-
       if (response.statusCode == 200 || response.statusCode == 201) {
-        notifyListeners();
+        setLoading(false);
         return true;
       } else {
-        final body = jsonDecode(response.body);
-        errorMessage = body['detail'] ?? 'Registro falhou';
-        notifyListeners();
+        final data = response.data;
+        setError(data['detail'] ?? 'Falha ao registrar o usuário.');
+        setLoading(false);
         return false;
       }
+    } on DioException catch (e) {
+      setError(DioErrorHelper.handle(e));
+      setLoading(false);
+      return false;
     } catch (e) {
-      isLoading = false;
-      errorMessage = e.toString();
-      notifyListeners();
+      setError(GenericErrorHelper.handle(e));
+      setLoading(false);
       return false;
     }
   }
