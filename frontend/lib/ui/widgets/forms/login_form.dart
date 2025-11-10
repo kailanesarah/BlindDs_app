@@ -11,10 +11,20 @@ import 'package:blindds_app/ui/widgets/fields/primary_field.dart';
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});
 
+  Future<void> _handleLogin(
+    BuildContext context,
+    LoginProvider provider,
+  ) async {
+    final success = await provider.login(context);
+    if (success && context.mounted) {
+      Navigator.pushNamed(context, AppRoutes.activityCode);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<LoginProvider>(
-      builder: (context, provider, child) {
+      builder: (context, provider, _) {
         return Semantics(
           container: true,
           label: 'Formulário de Login',
@@ -22,7 +32,7 @@ class LoginForm extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Email
+              // Campo de e-mail
               PrimaryTextField(
                 label: 'Email',
                 hint: 'exemplo@gmail.com',
@@ -31,10 +41,9 @@ class LoginForm extends StatelessWidget {
                 errorText: provider.emailError,
                 prefixIcon: const Icon(Icons.email),
               ),
-
               const SizedBox(height: AppDimensions.spaceM),
 
-              // Senha
+              // Campo de senha
               PrimaryTextField(
                 label: 'Senha',
                 hint: '********',
@@ -43,7 +52,6 @@ class LoginForm extends StatelessWidget {
                 errorText: provider.passwordError,
                 prefixIcon: const Icon(Icons.password),
               ),
-
               const SizedBox(height: AppDimensions.spaceL),
 
               // Botão de login
@@ -51,27 +59,12 @@ class LoginForm extends StatelessWidget {
                 text: provider.isLoading ? 'Entrando...' : 'Entrar',
                 onPressed: provider.isLoading
                     ? null
-                    : () {
-                        provider.login(context).then((success) {
-                          if (success) {
-                            Navigator.pushNamed(
-                              context,
-                              AppRoutes.activityCode,
-                            );
-                          }
-                        });
-                      },
+                    : () => _handleLogin(context, provider),
               ),
 
               const SizedBox(height: AppDimensions.spaceM),
-              const TextDivider(),
-              const SizedBox(height: AppDimensions.spaceM),
-
-              GoogleSignInButton(
-                onPressed: () {
-                  // implementação do login social
-                },
-              ),
+              // Botão Google
+              const GoogleSignInButton(),
             ],
           ),
         );
