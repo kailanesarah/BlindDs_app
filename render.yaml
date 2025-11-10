@@ -1,0 +1,37 @@
+version: '1'
+
+services:
+  # Serviço para a sua API (Backend Django)
+  - type: web
+    name: sua-api-render
+    # O Render irá buscar arquivos como Procfile e requirements.txt a partir da raiz.
+    rootDir: ./
+    plan: starter 
+    
+    # ⚠️ Comandos de Build: Executados apenas na primeira implantação ou quando o código muda.
+    buildCommand: |
+      pip install -r requirements.txt
+      # Coleta arquivos estáticos (necessário para produção)
+      python api/manage.py collectstatic --noinput
+      # Roda as migrações do banco de dados
+      python api/manage.py migrate
+    
+    # O comando de início (startCommand) é automaticamente lido do Procfile.
+    
+    # Variáveis de Ambiente
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.5 # Use a versão do Python que você está usando
+      - key: DEBUG
+        value: "False" # 🚨 OBRIGATÓRIO em produção!
+      - key: SECRET_KEY
+        generateValue: true # Gera uma chave secreta segura para produção
+      - key: ALLOWED_HOSTS
+        value: ${RENDER_EXTERNAL_HOSTNAME} # Permite o domínio do Render
+      
+      # 🔗 Conexão com o Banco de Dados no Render
+      - key: DATABASE_URL
+        fromService:
+          type: pserv
+          name: seu-db-service # ⬅️ SUBSTITUA PELO NOME REAL DO SEU SERVIÇO DE BD
+          envVar: DATABASE_URL

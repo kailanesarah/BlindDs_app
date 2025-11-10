@@ -1,1 +1,1 @@
-web: cd api && python manage.py migrate --noinput && gunicorn cors.wsgi:application
+web: gunicorn API.wsgi:application --bind 0.0.0.0:$PORT
