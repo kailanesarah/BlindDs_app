@@ -10,9 +10,17 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-tm_^3s2*dgbcf&2=_=$ekyj4n_jdsbg9gzckb8g688savwn$!"
 DEBUG = True
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "10.0.2.2", os.getenv("DJANGO_AUTH_URL")]
 
-CSRF_TRUSTED_ORIGINS = [os.getenv("DJANGO_AUTH_URL")]
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "10.0.2.2",
+    os.getenv("DJANGO_AUTH_HOST"),
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    os.getenv("DJANGO_AUTH_ORIGIN"),
+]
 
 # Modelo customizado
 AUTH_USER_MODEL = "users.CustomUser"
