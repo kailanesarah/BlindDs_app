@@ -11,10 +11,10 @@ services:
     buildCommand: |
       pip install -r requirements.txt
       # Coleta arquivos estáticos (necessário para produção)
-      python api/manage.py collectstatic --noinput
+      python api.manage collectstatic --noinput
       
       # 🚨 APENAS RODA/APLICA as migrações que JÁ FORAM CRIADAS E COMITADAS
-      python api/manage.py migrate
+      python api.manage migrate
     
     # O comando de início (startCommand) é automaticamente lido do Procfile.
     
