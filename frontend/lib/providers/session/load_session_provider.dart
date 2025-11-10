@@ -45,4 +45,15 @@ class LoadSessionProvider with ChangeNotifier {
     _isLoaded = true;
     notifyListeners();
   }
+
+  void debugSession() {
+    print('--- Sessão atual ---');
+    print('ID: $id');
+    print('Nome: $name');
+    print('Username: $username');
+    print('Email: $email');
+    print('Tipo de usuário: $userType');
+    print('Tem MFA: $hasMfa');
+    print('---------------------');
+  }
 }
