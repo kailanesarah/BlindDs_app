@@ -1,8 +1,11 @@
+import logging
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from users.serializers.register_serializer import RegisterSerializer
+from api.users.serializers.register_serializer import RegisterSerializer
+
+logger = logging.getLogger(__name__)
 
 
 class CustomRegisterView(CreateAPIView):
@@ -10,14 +13,23 @@ class CustomRegisterView(CreateAPIView):
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        data = {
-            "id": user.id,
-            "email": user.email,
-            "name": user.name,
-            "user_type": user.user_type,
-            "username": user.username,
-        }
-        return Response(data, status=status.HTTP_201_CREATED)
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+
+            data = {
+                "id": user.id,
+                "email": user.email,
+                "name": user.name,
+                "user_type": user.user_type,
+                "username": user.username,
+            }
+            return Response(data, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            logger.error(f"Erro ao registrar usuário: {e}")
+            return Response(
+                {"detail": "Ocorreu um erro ao criar o usuário."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )

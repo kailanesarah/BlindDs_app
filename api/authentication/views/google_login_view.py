@@ -1,43 +1,56 @@
-import logging
-
-from allauth.socialaccount.models import SocialAccount
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from authentication.utils.jwt_utils import generate_jwt_tokens
-from dj_rest_auth.registration.views import SocialLoginView
-from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from users.serializers.user_serializer import CustomUserSerializer
+from rest_framework import status
+from rest_framework.permissions import AllowAny
+from api.authentication.serializers import FirebaseLoginSerializer
+from api.authentication.services.firebase_auth_service import FirebaseAuthService
+import logging
 
 logger = logging.getLogger(__name__)
 
 
-class GoogleLoginView(SocialLoginView):
-    adapter_class = GoogleOAuth2Adapter
-    client_class = OAuth2Client
+class FirebaseLoginView(APIView):
+    permission_classes = [AllowAny]
 
-    def get_response(self):
+    def post(self, request, *args, **kwargs):
         try:
-            user = self.user
-            user_data = CustomUserSerializer(user).data
+            serializer = FirebaseLoginSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-            tokens = generate_jwt_tokens(user)
-            user_data.update(tokens)
+            firebase_id_token = serializer.validated_data.get("firebase_id_token")
+            decoded_token = FirebaseAuthService.verify_token(firebase_id_token)
+            if not decoded_token:
+                return Response(
+                    {"detail": "Token de autenticação inválido ou expirado."},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
 
-            try:
-                social_account = SocialAccount.objects.filter(
-                    user=user, provider="google"
-                ).first()
-                user_data["social_login"] = bool(social_account)
-            except Exception as e:
-                logger.warning(f"Erro ao verificar SocialAccount: {e}")
-                user_data["social_login"] = False
+            user = FirebaseAuthService.get_or_create_user(decoded_token)
+            if not user:
+                return Response(
+                    {"detail": "Erro ao processar os dados do usuário."},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
 
-            return Response(user_data, status=status.HTTP_200_OK)
+            tokens = FirebaseAuthService.generate_tokens(user)
+            if not tokens:
+                return Response(
+                    {"detail": "Erro ao gerar tokens de autenticação."},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+
+            response_data = FirebaseAuthService.build_response(user, tokens)
+            if not response_data:
+                return Response(
+                    {"detail": "Erro interno ao montar a resposta do servidor."},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+
+            return Response(response_data, status=status.HTTP_200_OK)
 
         except Exception as e:
-            logger.error(f"Erro no login social Google: {e}")
+            logger.error(f"Erro inesperado no login com Firebase: {e}")
             return Response(
-                {"detail": "Erro ao processar login social."},
+                {"detail": "Erro interno ao processar login."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
