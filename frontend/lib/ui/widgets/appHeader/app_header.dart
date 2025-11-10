@@ -23,7 +23,7 @@ class CustomAppHeader extends StatelessWidget implements PreferredSizeWidget {
           );
         }
 
-        final nameUser = session.username ?? 'Usuário';
+        final nameUser = session.username ?? session.name ?? 'Usuário';
 
         return SafeArea(
           child: Container(
