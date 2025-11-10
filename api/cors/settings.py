@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 import firebase_admin
 from firebase_admin import credentials
+import dj_database_url
 
 load_dotenv()
 DJANGO_AUTH_HOST = os.getenv("DJANGO_AUTH_HOST")
@@ -97,13 +98,22 @@ WSGI_APPLICATION = "api.cors.wsgi.application"
 # -----------------------------
 # Banco de dados
 # -----------------------------
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if os.getenv(
+    "RENDER"
+):  # Ambiente de produção (Render define essa variável automaticamente)
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=os.getenv("DATABASE_URL"),
+            conn_max_age=600,
+        )
     }
-}
-
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 # -----------------------------
 # Validação de senhas
 # -----------------------------
