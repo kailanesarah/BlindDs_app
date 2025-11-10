@@ -13,6 +13,8 @@ services:
       pip install -r requirements.txt
       # Coleta arquivos estáticos (necessário para produção)
       python api/manage.py collectstatic --noinput
+      # Cria as migrações do banco de dados
+      python api/manage.py makemigrations
       # Roda as migrações do banco de dados
       python api/manage.py migrate
     
