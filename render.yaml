@@ -3,7 +3,7 @@ version: '1'
 services:
   # Serviço para a sua API (Backend Django)
   - type: web
-    name: sua-api-render
+    name: api
     # O Render irá buscar arquivos como Procfile e requirements.txt a partir da raiz.
     rootDir: ./
     plan: starter 
