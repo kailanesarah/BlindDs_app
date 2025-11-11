@@ -1,8 +1,9 @@
-from django.apps import AppConfig
-from firebase_admin import credentials, initialize_app
-import firebase_admin
 import os
+
+import firebase_admin
+from django.apps import AppConfig
 from dotenv import load_dotenv
+from firebase_admin import credentials, initialize_app
 
 
 class AuthenticationConfig(AppConfig):

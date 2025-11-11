@@ -1,10 +1,11 @@
+import os
 from datetime import timedelta
 from pathlib import Path
-from dotenv import load_dotenv
-import os
-import firebase_admin
-from firebase_admin import credentials
+
 import dj_database_url
+import firebase_admin
+from dotenv import load_dotenv
+from firebase_admin import credentials
 
 load_dotenv()
 DJANGO_AUTH_HOST = os.getenv("DJANGO_AUTH_HOST")

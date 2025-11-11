@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from users.serializers.user_serializer import CustomUserSerializer
 
 

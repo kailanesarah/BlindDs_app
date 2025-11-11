@@ -2,8 +2,8 @@ import logging
 
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.views import TokenRefreshView
 
 logger = logging.getLogger(__name__)
 

@@ -1,10 +1,11 @@
 import logging
 
-from authentication.utils.jwt_utils import generate_jwt_tokens
 from dj_rest_auth.views import LoginView
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+
+from authentication.utils.jwt_utils import generate_jwt_tokens
 from users.serializers.user_serializer import CustomUserSerializer
 
 logger = logging.getLogger(__name__)

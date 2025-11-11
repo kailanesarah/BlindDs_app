@@ -1,10 +1,12 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
+import logging
+
 from rest_framework import status
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from authentication.serializers import FirebaseLoginSerializer
 from authentication.services.firebase_auth_service import FirebaseAuthService
-import logging
 
 logger = logging.getLogger(__name__)
 

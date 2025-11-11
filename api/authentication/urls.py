@@ -1,3 +1,5 @@
+from django.urls import path
+
 from authentication.views import (
     CustomLoginView,
     CustomLogoutView,
@@ -5,7 +7,6 @@ from authentication.views import (
     CustomTokenRefreshView,
     FirebaseLoginView,
 )
-from django.urls import path
 
 urlpatterns = [
     path("auth/login/", CustomLoginView.as_view(), name="auth_login"),
