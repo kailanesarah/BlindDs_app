@@ -1,1 +1,1 @@
-web: gunicorn api.cors.wsgi:application --bind 0.0.0.0:$PORT
+web: cd api && DJANGO_SETTINGS_MODULE=cors.settings python manage.py migrate --noinput && gunicorn cors.wsgi:application --bind 0.0.0.0:$PORT
