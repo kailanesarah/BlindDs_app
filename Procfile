@@ -1,1 +1,1 @@
-web: cd api && export PYTHONPATH=$PYTHONPATH:$(pwd)/.. && DJANGO_SETTINGS_MODULE=cors.settings python manage.py migrate --noinput && gunicorn cors.wsgi:application --bind 0.0.0.0:$PORT
+web: gunicorn api.wsgi:application
