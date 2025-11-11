@@ -1,4 +1,4 @@
-from api.authentication.views import (
+from authentication.views import (
     CustomLoginView,
     CustomLogoutView,
     CustomRegisterView,

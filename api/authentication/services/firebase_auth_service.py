@@ -1,9 +1,9 @@
 import logging
 from firebase_admin import auth
-from api.users.models import CustomUser
-from api.users.utils.username_utils import generate_username
-from api.authentication.utils.jwt_utils import generate_jwt_tokens
-from api.users.serializers.register_serializer import RegisterSerializer
+from users.models import CustomUser
+from users.utils.username_utils import generate_username
+from authentication.utils.jwt_utils import generate_jwt_tokens
+from users.serializers.register_serializer import RegisterSerializer
 
 logger = logging.getLogger(__name__)
 

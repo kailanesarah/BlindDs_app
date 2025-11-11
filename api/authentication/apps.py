@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 class AuthenticationConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "api.authentication"
+    name = "authentication"
 
     def ready(self):
         load_dotenv()

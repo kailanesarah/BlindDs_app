@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from api.users.serializers.register_serializer import RegisterSerializer
+from users.serializers.register_serializer import RegisterSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +29,6 @@ class CustomRegisterView(CreateAPIView):
         except Exception as e:
             logger.error(f"Erro ao registrar usuário: {e}")
             return Response(
-                {"detail": "Ocorreu um erro ao criar o usuário."},
+                {"detail": f"Ocorreu um erro ao criar o usuário. {e}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

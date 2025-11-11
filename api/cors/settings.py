@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "api.users",
-    "api.authentication",
+    "users",
+    "authentication",
     # DRF + autenticação
     "rest_framework",
     "rest_framework.authtoken",  # Mantém para Key
@@ -75,7 +75,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "api.cors.urls"
+ROOT_URLCONF = "cors.urls"
 CORS_ALLOW_ALL_ORIGINS = True
 
 TEMPLATES = [
@@ -93,7 +93,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "api.cors.wsgi.application"
+WSGI_APPLICATION = "cors.wsgi.application"
 
 # -----------------------------
 # Banco de dados

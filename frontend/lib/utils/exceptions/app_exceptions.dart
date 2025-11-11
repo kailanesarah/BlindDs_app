@@ -6,17 +6,17 @@ class AppException implements Exception {
 }
 
 class NetworkException extends AppException {
-  const NetworkException(String message) : super(message);
+  const NetworkException(super.message);
 }
 
 class AuthException extends AppException {
-  const AuthException(String message) : super(message);
+  const AuthException(super.message);
 }
 
 class ServerException extends AppException {
-  const ServerException(String message) : super(message);
+  const ServerException(super.message);
 }
 
 class ValidationException extends AppException {
-  const ValidationException(String message) : super(message);
+  const ValidationException(super.message);
 }

@@ -1,3 +1,15 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    // ... outras configurações (Java, etc.)
+    
+    // Habilita o Flake8 como linter
+    "python.linting.flake8Enabled": true,
+    
+    // Argumento explícito para Flake8
+    // O VS Code procura o arquivo a partir da raiz do projeto aberto.
+    "python.linting.flake8Args": [
+        "--config=./api/setup.cfg"
+    ],
+
+    // Recomendado: Habilitar o linting ao salvar
+    "python.linting.lintOnSave": true
 }

@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from api.users.models import CustomUser
-from api.users.utils.username_utils import generate_username
+from users.models import CustomUser
+from users.utils.username_utils import generate_username
 
 
 class RegisterSerializer(serializers.ModelSerializer):
