@@ -43,6 +43,13 @@ venv\Scripts\activate
 source venv/bin/activate
 
 ```
+## Navegue para o repositório:
+
+```bash
+
+cd api
+
+```
 
 ## Instale as dependências:
 
@@ -58,8 +65,8 @@ pip install -r requirements.txt
 
 ```bash
 
-python -m api.manage makemigrations
-python -m api.manage migrate
+python -m manage.py makemigrations
+python -m manage.py migrate
 
 ```
 
@@ -67,14 +74,14 @@ python -m api.manage migrate
 
 ```bash
 
-python -m api.manage createsuperuser
+python manage.py createsuperuser
 
 ```
 
 ## Rodando o servidor
 ```bash
 
-python -m api.manage runserver
+python manage.py runserver
 
 ```
 
