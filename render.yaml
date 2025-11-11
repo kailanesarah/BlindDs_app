@@ -1,37 +1,27 @@
 version: '1'
 
 services:
-  # Serviço para a sua API (Backend Django)
-  - type: web
-    name: BlindDs_app
-    rootDir: ./
-    plan: starter 
-    
-    # ⚠️ Comandos de Build: CORRIGIDO
-    # 🚀 Build Command CORRIGIDO
-    buildCommand: |
-      pip install -r requirements.txt
-  
-      # Força o uso do settings.py correto para garantir que o BD e as APPS sejam reconhecidos.
-      DJANGO_SETTINGS_MODULE=api.cors.settings python -m api.manage collectstatic --noinput
-      DJANGO_SETTINGS_MODULE=api.cors.settings python -m api.manage migrate
-    
-    # O comando de início (startCommand) é automaticamente lido do Procfile.
-    
-    # Variáveis de Ambiente (OK)
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.5
-      - key: DEBUG
-        value: "False"
-      - key: SECRET_KEY
-        generateValue: true
-      - key: ALLOWED_HOSTS
-        value: ${RENDER_EXTERNAL_HOSTNAME}
-      
-      # 🔗 Conexão com o Banco de Dados no Render (OK)
-      - key: DATABASE_URL
-        fromService:
-          type: pserv
-          name: blindDS-db
-          envVar: DATABASE_URL
+  type: web
+  name: BlindDs_app
+  rootDir: ./
+  plan: starter
+
+  buildCommand: |
+    pip install -r requirements.txt
+    DJANGO_SETTINGS_MODULE=api.cors.settings python api/manage.py collectstatic --noinput
+    DJANGO_SETTINGS_MODULE=api.cors.settings python api/manage.py migrate
+
+  envVars:
+    - key: PYTHON_VERSION
+      value: 3.11.5
+    - key: DEBUG
+      value: "False"
+    - key: SECRET_KEY
+      generateValue: true
+    - key: ALLOWED_HOSTS
+      value: ${RENDER_EXTERNAL_HOSTNAME}
+    - key: DATABASE_URL
+      fromService:
+        type: pserv
+        name: blindDS-db
+        envVar: DATABASE_URL
