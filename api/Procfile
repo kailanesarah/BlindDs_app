@@ -1,0 +1,1 @@
+web: DJANGO_SETTINGS_MODULE=cors.settings gunicorn cors.wsgi:application

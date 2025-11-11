@@ -16,16 +16,14 @@ O backend do **BlindDS** é desenvolvido em **Django** e é responsável por tod
 
 ## Instalação e configuração
 
-1. Clone o repositório e vá para a pasta `api/`:
-
-```bash
-cd api
-```
+1. Clone o repositório 
 
 ## Crie um ambiente virtual:
 
 ```bash
+
 python -m venv venv
+
 ```
 
 ## Ative o ambiente virtual:
@@ -33,41 +31,61 @@ python -m venv venv
 ### Windows:
 
 ```bash
+
 venv\Scripts\activate
+
 ```
 
 ### Linux/Mac:
 
 ```bash
+
 source venv/bin/activate
+
+```
+## Navegue para o repositório:
+
+```bash
+
+cd api
+
 ```
 
 ## Instale as dependências:
 
 ```bash
+
 pip install -r requirements.txt
+
 ```
 
-## Configure as variáveis de ambiente se necessário (ex: .env).
+## Configure as variáveis de ambiente disponíveis em .env.example
 
 ## Execute as migrations do Django:
 
 ```bash
-python manage.py migrate
+
+python -m manage.py makemigrations
+python -m manage.py migrate
+
 ```
 
 ## Crie um superusuário para acesso ao admin (opcional):
 
 ```bash
+
 python manage.py createsuperuser
+
 ```
 
 ## Rodando o servidor
 ```bash
+
 python manage.py runserver
+
 ```
 
-O backend ficará disponível em [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
+O backend ficará disponível localmente em [http://127.0.0.1:8000/](http://127.0.0.1:8000/),.
 
 ## Estrutura da API
 

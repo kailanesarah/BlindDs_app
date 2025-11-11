@@ -1,11 +1,30 @@
+import os
 from datetime import timedelta
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+import dj_database_url
+import firebase_admin
+from dotenv import load_dotenv
+from firebase_admin import credentials
 
+load_dotenv()
+DJANGO_AUTH_HOST = os.getenv("DJANGO_AUTH_HOST")
+DJANGO_AUTH_ORIGIN = os.getenv("DJANGO_AUTH_ORIGIN")
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-tm_^3s2*dgbcf&2=_=$ekyj4n_jdsbg9gzckb8g688savwn$!"
 DEBUG = True
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "10.0.2.2",
+    os.getenv("DJANGO_AUTH_HOST"),
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    os.getenv("DJANGO_AUTH_ORIGIN"),
+]
 
 # Modelo customizado
 AUTH_USER_MODEL = "users.CustomUser"
@@ -14,11 +33,10 @@ AUTH_USER_MODEL = "users.CustomUser"
 # Configurações do dj-rest-auth / JWT
 # -----------------------------
 REST_USE_JWT = True  # Habilita JWT
-# Não desabilitar TokenModel se quiser Key também
-# REST_AUTH_TOKEN_MODEL = None  # Comentado, pois queremos manter a Key também
+
 
 # -----------------------------
-# Aplicativos instalados
+# Apps instaladas
 # -----------------------------
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -28,6 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "users",
+    "authentication",
     # DRF + autenticação
     "rest_framework",
     "rest_framework.authtoken",  # Mantém para Key
@@ -38,12 +57,15 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "corsheaders",
+    "django.contrib.sites",
 ]
 
 # -----------------------------
 # Middleware
 # -----------------------------
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -55,6 +77,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "cors.urls"
+CORS_ALLOW_ALL_ORIGINS = True
 
 TEMPLATES = [
     {
@@ -76,13 +99,22 @@ WSGI_APPLICATION = "cors.wsgi.application"
 # -----------------------------
 # Banco de dados
 # -----------------------------
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if os.getenv(
+    "RENDER"
+):  # Ambiente de produção (Render define essa variável automaticamente)
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=os.getenv("DATABASE_URL"),
+            conn_max_age=600,
+        )
     }
-}
-
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 # -----------------------------
 # Validação de senhas
 # -----------------------------
@@ -107,6 +139,7 @@ USE_TZ = True
 # Arquivos estáticos
 # -----------------------------
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # -----------------------------
@@ -124,7 +157,7 @@ REST_FRAMEWORK = {
 # Serializer customizado para registro
 # -----------------------------
 REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": "users.serializers.CustomRegisterSerializer",
+    "REGISTER_SERIALIZER": "authentication.serializers.CustomRegisterSerializer",
 }
 
 # -----------------------------
@@ -145,3 +178,20 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_VERIFICATION = "none"
+
+
+# settings.py
+
+# -----------------------------
+# Configurações do Social Account Google
+# -----------------------------
+
+
+FIREBASE_CREDENTIALS_PATH = os.path.join(BASE_DIR, "config", "serviceAccountKey.json")
+
+if os.path.exists(FIREBASE_CREDENTIALS_PATH):
+    cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
+    firebase_admin.initialize_app(cred)
+else:
+    # Lógica para ambiente de produção (usando variáveis de ambiente, se necessário)
+    pass

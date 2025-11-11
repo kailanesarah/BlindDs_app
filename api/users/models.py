@@ -47,6 +47,7 @@ class CustomUser(AbstractUser):
     )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255, blank=True)
     email = models.EmailField(unique=True)
     user_type = models.CharField(max_length=20, choices=TYPE_USERS, default="student")
     has_mfa = models.BooleanField(default=False)
