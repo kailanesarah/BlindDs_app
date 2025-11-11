@@ -1,0 +1,40 @@
+version: '1'
+
+services:
+  # 1. Serviço Web Django Backend
+  - type: web
+    name: BlindDs_app
+    env: python
+    rootDir: . # 🌟 O render.yaml está agora em 'api/', então o rootDir é o '.' (a própria pasta 'api')
+    plan: starter
+    
+    # 🌟 COMANDO DE BUILD: Simples, pois manage.py e requirements.txt estão na raiz de trabalho (api/).
+    buildCommand: |
+      pip install -r requirements.txt
+      DJANGO_SETTINGS_MODULE=cors.settings python manage.py collectstatic --noinput
+      DJANGO_SETTINGS_MODULE=cors.settings python manage.py migrate
+    
+    # 🌟 COMANDO DE INICIALIZAÇÃO: **REMOVIDO** para que o Render use o Procfile.
+    # Se você quiser que o Render use o Procfile, você deve remover o 'startCommand'.
+    # Caso contrário, o 'startCommand' seria:
+    # startCommand: "DJANGO_SETTINGS_MODULE=cors.settings gunicorn cors.wsgi:application"
+    
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.5
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: ${RENDER_EXTERNAL_HOSTNAME}
+      - key: DATABASE_URL
+        fromService:
+          type: pserv
+          name: blindDS-db
+          envVar: DATABASE_URL
+          
+  # 2. Serviço de Banco de Dados PostgreSQL
+  - type: pgbundle
+    name: blindDS-db
+    plan: starter
