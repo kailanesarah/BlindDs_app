@@ -35,7 +35,7 @@ class AppThemes {
     colorScheme: const ColorScheme.light(
       primary: AppColors.bluePrimary,
       secondary: AppColors.blueSecondary,
-      surface: AppColors.grayDefault,
+      surface: AppColors.grayDisabled ,
       onSurface: Colors.black87,
     ),
   );

@@ -10,6 +10,6 @@ class AppColors {
 
   // Tons de cinza
   static const Color grayDefault = Color(0xFFF8FBFF);
-  static const Color grayDisabled = Color(0xFFF3F3F3);
-  static const Color grayBlackSecondary = Color(0xFF424344);
+  static const Color grayDisabled = Color.fromARGB(255, 209, 209, 209);
+  static const Color grayBlackSecondary = Color.fromARGB(255, 52, 53, 53);
 }
