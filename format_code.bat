@@ -11,7 +11,7 @@ call venv\Scripts\python.exe -m flake8 .
 REM Adicionado o 'if errorlevel 1' para parar o script se o Flake8 encontrar erros.
 if errorlevel 1 (
     echo.
-    echo ❌ ERROS ENCONTRADOS PELO FLAKE8! Corrija antes de prosseguir.
+    echo  ERROS ENCONTRADOS PELO FLAKE8! Corrija antes de prosseguir.
     pause
     exit /b 1
 )
