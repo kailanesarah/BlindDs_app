@@ -3,12 +3,13 @@ import 'package:blindds_app/providers/session/load_session_provider.dart';
 import 'package:blindds_app/providers/session/register_session_provider.dart';
 import 'package:blindds_app/providers/auth/login_provider.dart';
 import 'package:blindds_app/providers/auth/register_provider.dart';
+import 'package:blindds_app/providers/theme/theme_provider.dart';
 import 'package:blindds_app/services/login_google_service.dart';
 import 'package:blindds_app/services/login_service.dart';
 import 'package:blindds_app/services/register_service.dart';
 import 'package:blindds_app/routes/app_routes.dart';
 import 'package:blindds_app/routes/app_pages_routes.dart';
-import 'package:blindds_app/ui/colors/app_colors.dart';
+import 'package:blindds_app/ui/style/theme/app_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -18,11 +19,7 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Carrega primeiro as variáveis de ambiente
   await dotenv.load(fileName: ".env");
-
-
-  // Depois inicializa o Firebase (caso use alguma variável do .env)
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const MyApp());
@@ -69,30 +66,37 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => RegisterProvider(registerService: RegisterService()),
         ),
-      ],
-      child: MaterialApp(
-        title: 'BlindDs',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.bluePrimary),
-          useMaterial3: true,
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
         ),
+      ],
 
-        // 🔹 ESSA É A PARTE QUE FAZ O ZOOM FUNCIONAR
-        builder: (context, child) {
-          final mediaQuery = MediaQuery.of(context);
-          return MediaQuery(
-            data: mediaQuery.copyWith(
-              textScaler: mediaQuery.textScaler.clamp(
-                minScaleFactor: 0.8,
-                maxScaleFactor: 2.0,
-              ),
-            ),
-            child: child!,
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          return MaterialApp(
+            title: 'BlindDs',
+            theme: AppThemes.lightTheme,
+            darkTheme: AppThemes.darkTheme,
+            themeMode: themeProvider.themeMode, 
+
+            // 🔹 Mantém sua configuração de zoom de texto
+            builder: (context, child) {
+              final mediaQuery = MediaQuery.of(context);
+              return MediaQuery(
+                data: mediaQuery.copyWith(
+                  textScaler: mediaQuery.textScaler.clamp(
+                    minScaleFactor: 0.8,
+                    maxScaleFactor: 2.0,
+                  ),
+                ),
+                child: child!,
+              );
+            },
+
+            initialRoute: AppRoutes.home,
+            routes: AppRoutePages.routes,
           );
         },
-
-        initialRoute: AppRoutes.home,
-        routes: AppRoutePages.routes,
       ),
     );
   }
