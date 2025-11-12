@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:blindds_app/ui/colors/app_colors.dart';
+import 'package:blindds_app/ui/style/colors/app_colors.dart';
 import 'package:blindds_app/ui/dimens/app_dimensions.dart';
 
 class PrimaryTextField extends StatelessWidget {
@@ -42,6 +42,10 @@ class PrimaryTextField extends StatelessWidget {
         onTap: onTap,
         onChanged: onChanged,
         readOnly: readOnly,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppColors.bluePrimary,
+              fontWeight: FontWeight.w500,
+            ),
         decoration: InputDecoration(
           hintText: hint,
           labelText: label,
@@ -58,13 +62,27 @@ class PrimaryTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppDimensions.radiusS),
             borderSide: const BorderSide(
               color: AppColors.bluePrimary,
-              width: AppDimensions.borderWidthThick,
+              width: AppDimensions.borderWidthThin, // 🔧 espessura menor fica mais agradável
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppDimensions.radiusS),
             borderSide: const BorderSide(
               color: AppColors.blueSecondary,
+              width: AppDimensions.borderWidthThick,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppDimensions.radiusS),
+            borderSide: const BorderSide(
+              color: Colors.redAccent,
+              width: AppDimensions.borderWidthThick,
+            ),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppDimensions.radiusS),
+            borderSide: const BorderSide(
+              color: Colors.redAccent,
               width: AppDimensions.borderWidthThick,
             ),
           ),
