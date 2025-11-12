@@ -1,5 +1,5 @@
 import 'package:blindds_app/routes/app_routes.dart';
-import 'package:blindds_app/ui/colors/app_colors.dart';
+import 'package:blindds_app/ui/style/colors/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:blindds_app/ui/dimens/app_dimensions.dart';
 import 'package:blindds_app/ui/widgets/images/login_banner.dart';

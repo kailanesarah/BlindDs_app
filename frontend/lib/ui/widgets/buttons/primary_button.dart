@@ -1,7 +1,6 @@
 import 'package:blindds_app/ui/dimens/app_dimensions.dart';
 import 'package:blindds_app/ui/text/app_lexend_text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:blindds_app/ui/colors/app_colors.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
@@ -19,8 +18,9 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme; // <- obtém cores do tema
+
     return Semantics(
-      // Garante que o leitor de tela entenda que este é um botão
       button: true,
       label: text,
       hint: 'Pressione para executar a ação: $text',
@@ -39,14 +39,14 @@ class PrimaryButton extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppDimensions.radiusM),
             ),
-            backgroundColor: backgroundColor ?? AppColors.bluePrimary,
-            foregroundColor: textColor ?? AppColors.grayDefault,
+            backgroundColor: backgroundColor ?? colorScheme.primary,
+            foregroundColor: textColor ?? colorScheme.onPrimary,
           ),
           child: Text(
             text,
             textAlign: TextAlign.center,
             style: SecondaryTextStyles.bodyBold.copyWith(
-              color: textColor ?? AppColors.grayDefault,
+              color: textColor ?? colorScheme.onPrimary,
             ),
           ),
         ),

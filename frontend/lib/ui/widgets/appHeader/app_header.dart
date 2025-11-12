@@ -1,5 +1,5 @@
 import 'package:blindds_app/providers/session/load_session_provider.dart';
-import 'package:blindds_app/ui/colors/app_colors.dart';
+import 'package:blindds_app/ui/style/colors/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:blindds_app/ui/widgets/appHeader/icons_app_bar.dart';
 import 'package:blindds_app/ui/widgets/appHeader/user_profile_app_bar.dart';
