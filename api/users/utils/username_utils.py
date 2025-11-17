@@ -5,7 +5,7 @@ import re
 import string
 
 
-def generate_username(name: str, max_length: int = 30) -> str:
+def generate_username(name: str, max_length: int = 15) -> str:
     """
     Gera um username único a partir do nome fornecido.
     Remove espaços e caracteres especiais, adiciona números aleatórios.
