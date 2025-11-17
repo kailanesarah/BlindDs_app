@@ -1,7 +1,7 @@
 import 'package:blindds_app/config/app_config.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:blindds_app/services/refresh_service.dart';
+import 'package:blindds_app/services/auth/refresh_service.dart';
 import 'dart:developer';
 
 class ApiClient {

@@ -1,9 +1,6 @@
+import 'package:blindds_app/controllers/register_controller.dart';
 import 'package:blindds_app/utils/base_provider.dart';
-import 'package:blindds_app/utils/helpers/dio_error_helper.dart';
-import 'package:blindds_app/utils/helpers/generic_error_helper.dart';
 import 'package:blindds_app/utils/validators.dart';
-import 'package:blindds_app/services/register_service.dart';
-import 'package:dio/dio.dart';
 
 class RegisterProvider extends BaseProvider {
   String name = '';
@@ -15,18 +12,17 @@ class RegisterProvider extends BaseProvider {
   String? emailError;
   String? passwordError;
 
-  final RegisterService _registerService;
+  final RegisterController controller;
 
-  RegisterProvider({required RegisterService registerService})
-    : _registerService = registerService;
+  RegisterProvider({required this.controller});
 
-  /// Define o tipo de usuário (ex: aluno, professor, empresa, etc)
+  /// Muda o tipo de usuário
   void setUserType(String type) {
     userType = type;
     notifyListeners();
   }
 
-  /// Valida todos os campos antes do envio
+  /// Valida campos antes do envio
   bool validateFields() {
     nameError = Validators.validateUsername(name);
     emailError = Validators.validateEmail(email);
@@ -36,41 +32,31 @@ class RegisterProvider extends BaseProvider {
       notifyListeners();
       return false;
     }
+
     return true;
   }
 
-  /// Envia os dados de registro para o backend
+  /// Usa o controller para registrar
   Future<bool> register() async {
     if (!validateFields()) return false;
 
-    setLoading(true);
     clearError();
+    setLoading(true);
 
-    try {
-      final Response response = await _registerService.registerUser(
-        name: name,
-        email: email,
-        password: password,
-        userType: userType,
-      );
+    final String? error = await controller.register(
+      name: name,
+      email: email,
+      password: password,
+      userType: userType,
+    );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        setLoading(false);
-        return true;
-      } else {
-        final data = response.data;
-        setError(data['detail'] ?? 'Falha ao registrar o usuário.');
-        setLoading(false);
-        return false;
-      }
-    } on DioException catch (e) {
-      setError(DioErrorHelper.handle(e));
-      setLoading(false);
-      return false;
-    } catch (e) {
-      setError(GenericErrorHelper.handle(e));
-      setLoading(false);
+    setLoading(false);
+
+    if (error != null) {
+      setError(error);
       return false;
     }
+
+    return true;
   }
 }
