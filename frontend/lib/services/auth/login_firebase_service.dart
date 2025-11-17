@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
+
+class LoginFirebaseService{
 Future<UserCredential?> signInWithGoogle() async {
   if (kIsWeb) {
     return await FirebaseAuth.instance.signInWithPopup(GoogleAuthProvider());
@@ -9,3 +11,5 @@ Future<UserCredential?> signInWithGoogle() async {
     return await FirebaseAuth.instance.signInWithProvider(GoogleAuthProvider());
   }
 }
+}
+
