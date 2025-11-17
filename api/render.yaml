@@ -11,7 +11,8 @@ services:
       pip install -r requirements.txt
       DJANGO_SETTINGS_MODULE=cors.settings python manage.py collectstatic --noinput
       DJANGO_SETTINGS_MODULE=cors.settings python manage.py migrate
-      DJANGO_SETTINGS_MODULE=cors.settings python seed.py
+      DJANGO_SETTINGS_MODULE=cors.settings python manage.py seed
+
 
     
     envVars:
