@@ -1,81 +1,106 @@
-import 'dart:convert';
+import 'package:blindds_app/controllers/login_controller.dart';
 import 'package:blindds_app/utils/base_provider.dart';
-import 'package:blindds_app/utils/helpers/dio_error_helper.dart';
-import 'package:blindds_app/utils/helpers/generic_error_helper.dart';
-import 'package:blindds_app/utils/validators.dart';
-import 'package:blindds_app/providers/session/load_session_provider.dart';
-import 'package:blindds_app/providers/session/register_session_provider.dart';
-import 'package:blindds_app/services/login_service.dart';
-import 'package:provider/provider.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:blindds_app/utils/shared_preferences_utils.dart';
 
 class LoginProvider extends BaseProvider {
   String email = '';
   String password = '';
 
-  String? emailError;
-  String? passwordError;
+  // Dados da sessão
+  String id = '';
+  String name = '';
+  String userType = '';
+  String access = '';
+  String refresh = '';
 
-  final LoginService _loginService;
-  final RegisterSessionProvider _registerSessionProvider;
+  final LoginController controller;
 
-  LoginProvider({
-    required LoginService loginService,
-    required RegisterSessionProvider registerSessionProvider,
-  }) : _loginService = loginService,
-       _registerSessionProvider = registerSessionProvider;
+  LoginProvider({required this.controller}) {
+    // Carrega a sessão automaticamente quando o Provider é criado
+    loadSession();
+  }
 
-  Future<bool> login(BuildContext context) async {
-    emailError = Validators.validateEmail(email);
-    passwordError = Validators.validatePassword(password);
+  /// Realiza login e salva sessão
+  Future<bool> loginUser() async {
+    setLoading(true);
     clearError();
 
-    if (emailError != null || passwordError != null) {
-      notifyListeners();
-      return false;
-    }
-
-    setLoading(true);
-
     try {
-      final Response response = await _loginService.loginUser(
-        email: email,
-        password: password,
-      );
+      final loginResult = await controller.login(email, password);
 
-      if (response.statusCode == 200) {
-        final data = response.data is Map
-            ? response.data
-            : jsonDecode(response.data);
-
-        // Salva e atualiza sessão
-        await _registerSessionProvider.saveSession(data);
-
-        final loadSession = Provider.of<LoadSessionProvider>(
-          context,
-          listen: false,
-        );
-        loadSession.updateSession(data);
-
-        setLoading(false);
-        return true;
-      } else {
-        final body = response.data is Map
-            ? response.data
-            : jsonDecode(response.data);
-        setError(body['detail'] ?? 'Falha ao fazer login.');
-        setLoading(false);
+      if (loginResult == null) {
+        setError("Falha ao fazer login.");
         return false;
       }
-    } on DioException catch (e) {
-      setError(DioErrorHelper.handle(e));
-      setLoading(false);
-      return false;
+
+      // Atualiza os dados locais
+      id = loginResult['id'] ?? '';
+      name = loginResult['name'] ?? '';
+      userType = loginResult['user_type'] ?? '';
+      access = loginResult['access'] ?? '';
+      refresh = loginResult['refresh'] ?? '';
+
+      // Salvar no SharedPreferences
+      await SessionStorage.saveData({
+        'id': id,
+        'name': name,
+        'user_type': userType,
+        'access': access,
+        'refresh': refresh,
+      });
+
+      notifyListeners();
+      return true;
+
     } catch (e) {
-      setError(GenericErrorHelper.handle(e));
-      setLoading(false);
+      setError(e.toString());
       return false;
+
+    } finally {
+      setLoading(false);
     }
   }
+
+  /// Carrega a sessão do SharedPreferences
+  Future<void> loadSession() async {
+    setLoading(true);
+
+    final data = await SessionStorage.loadData([
+      'id',
+      'name',
+      'user_type',
+      'access',
+      'refresh',
+    ]);
+
+    id = data['id'] ?? '';
+    name = data['name'] ?? '';
+    userType = data['user_type'] ?? '';
+    access = data['access'] ?? '';
+    refresh = data['refresh'] ?? '';
+
+    setLoading(false);
+    notifyListeners();
+  }
+
+  /// Limpa tudo (Provider + SharedPreferences)
+  Future<void> logout() async {
+    id = '';
+    name = '';
+    userType = '';
+    access = '';
+    refresh = '';
+
+    await SessionStorage.clearData([
+      'id',
+      'name',
+      'user_type',
+      'access',
+      'refresh',
+    ]);
+
+    notifyListeners();
+  }
+
+  bool get isLoggedIn => access.isNotEmpty;
 }
