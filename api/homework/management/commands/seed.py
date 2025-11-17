@@ -1,3 +1,4 @@
+import sys
 from django.core.management.base import BaseCommand
 from homework.models import HomeworkModel
 
@@ -12,6 +13,10 @@ class Command(BaseCommand):
         )
 
         if created:
-            self.stdout.write(self.style.SUCCESS(f"Seed gerado: {atividade.atv_name}"))
+            msg = f"Seed gerado: {atividade.atv_name}"
+            self.stdout.write(self.style.SUCCESS(msg))
+            print(msg, file=sys.stderr)  # garante que o Render capture
         else:
-            self.stdout.write("Seed já existente, nada criado.")
+            msg = "Seed já existente, nada criado."
+            self.stdout.write(self.style.WARNING(msg))
+            print(msg, file=sys.stderr)  # garante que o Render capture
