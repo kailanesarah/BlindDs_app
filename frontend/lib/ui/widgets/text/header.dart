@@ -19,15 +19,13 @@ class Header extends StatelessWidget {
         children: [
           Text(
             title,
-            style: PrimaryTextStyles.h1Medium.copyWith(
-            ),
+            style: PrimaryTextStyles.h1Medium.copyWith(),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppDimensions.spaceS),
           Text(
             subtitle,
-            style: SecondaryTextStyles.bodyRegular.copyWith(
-            ),
+            style: SecondaryTextStyles.bodyRegular.copyWith(),
             textAlign: TextAlign.center,
           ),
         ],

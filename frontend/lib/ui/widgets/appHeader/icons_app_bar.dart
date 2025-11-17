@@ -6,12 +6,10 @@ import 'package:provider/provider.dart';
 class IconsAppBar extends StatelessWidget {
   const IconsAppBar({super.key});
 
-  // Mude para receber o ThemeProvider
-void _handleDarkMode(ThemeProvider provider) {
-  // Acesso direto, não precisa mais do Provider.of(context)
-  final isDark = provider.themeMode == ThemeMode.dark;
-  provider.toggleTheme(!isDark);
-}
+  void _handleDarkMode(ThemeProvider provider) {
+    final isDark = provider.themeMode == ThemeMode.dark;
+    provider.toggleTheme(!isDark);
+  }
 
   @override
   Widget build(BuildContext context) {

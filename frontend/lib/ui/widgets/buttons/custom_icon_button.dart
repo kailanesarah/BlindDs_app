@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class CustomIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onPressed;
-  final String? label; // descrição para leitores de tela
+  final String? label; 
 
   const CustomIconButton({
     super.key,
@@ -22,7 +22,7 @@ class CustomIconButton extends StatelessWidget {
         icon: Icon(icon, size: 32.0, color: AppColors.grayDefault),
         onPressed: onPressed,
         tooltip:
-            label ?? 'Botão de ícone', // acessível também via hover/long press
+            label ?? 'Botão de ícone', 
       ),
     );
   }

@@ -1,4 +1,4 @@
-import 'package:blindds_app/providers/session/load_session_provider.dart';
+import 'package:blindds_app/providers/auth/login_with_google_provider.dart';
 import 'package:blindds_app/ui/style/colors/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:blindds_app/ui/widgets/appHeader/icons_app_bar.dart';
@@ -10,9 +10,9 @@ class CustomAppHeader extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LoadSessionProvider>(
+    return Consumer<LoginGoogleProvider>( 
       builder: (context, session, child) {
-        if (!session.isLoaded) {
+        if (session.isLoading) {
           return SafeArea(
             child: Container(
               height: 80,
@@ -23,7 +23,7 @@ class CustomAppHeader extends StatelessWidget implements PreferredSizeWidget {
           );
         }
 
-        final nameUser = session.username ?? session.name ?? 'Usuário';
+        final nameUser = session.name;
 
         return SafeArea(
           child: Container(

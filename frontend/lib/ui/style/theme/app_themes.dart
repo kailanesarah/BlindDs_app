@@ -11,7 +11,7 @@ class AppThemes {
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.bluePrimary,
       titleTextStyle: TextStyle(
-        color: Colors.white, 
+        color: Colors.white,
         fontSize: 18,
         fontWeight: FontWeight.bold,
       ),
@@ -19,7 +19,7 @@ class AppThemes {
     ),
 
     textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: Colors.black87), 
+      bodyLarge: TextStyle(color: Colors.black87),
       bodyMedium: TextStyle(color: Colors.black87),
       bodySmall: TextStyle(color: Colors.black54),
       headlineSmall: TextStyle(
@@ -35,7 +35,7 @@ class AppThemes {
     colorScheme: const ColorScheme.light(
       primary: AppColors.bluePrimary,
       secondary: AppColors.blueSecondary,
-      surface: AppColors.grayDisabled ,
+      surface: AppColors.grayDisabled,
       onSurface: Colors.black87,
     ),
   );
@@ -64,17 +64,14 @@ class AppThemes {
         color: AppColors.blueSecondary,
         fontWeight: FontWeight.bold,
       ),
-      titleMedium: TextStyle(
-        color: Colors.white,
-        fontWeight: FontWeight.w600,
-      ),
+      titleMedium: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
     ),
 
     colorScheme: const ColorScheme.dark(
       primary: AppColors.blueSecondary,
       secondary: AppColors.blueSecondaryHover,
       surface: AppColors.grayBlackSecondary,
-      onSurface: Colors.white, 
+      onSurface: Colors.white,
     ),
   );
 }

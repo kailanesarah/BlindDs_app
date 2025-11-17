@@ -43,9 +43,9 @@ class PrimaryTextField extends StatelessWidget {
         onChanged: onChanged,
         readOnly: readOnly,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppColors.bluePrimary,
-              fontWeight: FontWeight.w500,
-            ),
+          color: AppColors.bluePrimary,
+          fontWeight: FontWeight.w500,
+        ),
         decoration: InputDecoration(
           hintText: hint,
           labelText: label,
@@ -62,7 +62,8 @@ class PrimaryTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppDimensions.radiusS),
             borderSide: const BorderSide(
               color: AppColors.bluePrimary,
-              width: AppDimensions.borderWidthThin, // 🔧 espessura menor fica mais agradável
+              width: AppDimensions
+                  .borderWidthThin, // 🔧 espessura menor fica mais agradável
             ),
           ),
           focusedBorder: OutlineInputBorder(
