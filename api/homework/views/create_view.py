@@ -15,18 +15,18 @@ class HomeworkCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        classroom_id = self.kwargs.get("classroom_id")
+        serializer.save(user=self.request.user, classroom_id=classroom_id)
 
     def create(self, request, *args, **kwargs):
         if request.user.user_type != "professor":
             return Response(
-                {
-                    "message": "Acesso negado. Apenas professores podem criar atividades."
-                },
+                {"message": "Apenas professores podem criar atividades."},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
         serializer = self.get_serializer(data=request.data)
+
         try:
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
@@ -37,6 +37,6 @@ class HomeworkCreateView(CreateAPIView):
         except Exception as e:
             logger.exception("Erro ao criar atividade: %s", e)
             return Response(
-                {"message": "Ocorreu um erro ao criar a atividade.", "error": str(e)},
+                {"message": "Erro ao criar atividade.", "error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

@@ -34,7 +34,6 @@ class HomeworkDeleteView(DestroyAPIView):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-            # executa a exclusão padrão do DRF
             self.perform_destroy(homework)
 
             return Response(

@@ -18,7 +18,6 @@ class HomeworkUpdateView(UpdateAPIView):
         try:
             pk = kwargs.get("pk")
 
-            # Verifica permissão
             if request.user.user_type != "professor":
                 return Response(
                     {
@@ -28,7 +27,6 @@ class HomeworkUpdateView(UpdateAPIView):
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
-            # Verifica se o ID existe
             try:
                 homework = HomeworkModel.objects.get(id=pk)
             except HomeworkModel.DoesNotExist:
