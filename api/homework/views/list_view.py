@@ -12,17 +12,12 @@ logger = logging.getLogger(__name__)
 class HomeworkListView(ListAPIView):
     queryset = HomeworkModel.objects.all()
     serializer_class = HomeworkSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [
+        IsAuthenticated,
+    ]
 
     def list(self, request, *args, **kwargs):
         try:
-            if request.user.user_type == "professor":
-                return Response(
-                    {
-                        "message": "Acesso negado. Apenas alunos podem listar atividades."
-                    },
-                    status=status.HTTP_403_FORBIDDEN,
-                )
 
             queryset = self.get_queryset()
             data = self.get_serializer(queryset, many=True).data

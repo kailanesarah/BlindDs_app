@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "users",
     "authentication",
     "homework",
+    "classroom",
     # DRF + autenticação
     "rest_framework",
     "rest_framework.authtoken",  # Mantém para Key

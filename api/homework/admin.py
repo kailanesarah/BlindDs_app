@@ -5,27 +5,45 @@ from homework.models import HomeworkModel
 @admin.register(HomeworkModel)
 class HomeworkAdmin(admin.ModelAdmin):
     list_display = (
-        "atv_code",
-        "atv_name",
+        "name",
         "user",
-        "atv_created_at",
-        "atv_updated_at",
+        "created_at",
+        "updated_at",
     )
 
-    list_display_links = ("atv_code", "atv_name")
+    list_display_links = ("name",)
 
-    search_fields = ("atv_code", "atv_name", "user__username")
+    search_fields = ("name", "user__username")
 
-    list_filter = ("atv_created_at", "user")
+    list_filter = ("created_at", "user")
 
-    readonly_fields = ("atv_id", "atv_code", "atv_created_at", "atv_updated_at")
+    readonly_fields = ("id", "created_at", "updated_at")
 
     fieldsets = (
-        ("Identificação", {"fields": ("atv_id", "atv_code")}),
-        ("Informações da Atividade", {"fields": ("atv_name", "atv_description")}),
-        ("Usuário Responsável", {"fields": ("user",)}),
-        ("Datas", {"fields": ("atv_created_at", "atv_updated_at")}),
+        (
+            "Identificação",
+            {
+                "fields": ("id",),
+            },
+        ),
+        (
+            "Informações da Atividade",
+            {
+                "fields": ("name", "description", "deadline"),
+            },
+        ),
+        (
+            "Usuário e Sala",
+            {
+                "fields": ("user", "classroom"),
+            },
+        ),
+        (
+            "Datas",
+            {
+                "fields": ("created_at", "updated_at"),
+            },
+        ),
     )
 
-    # Ordenação padrão
-    ordering = ("-atv_created_at",)
+    ordering = ("-created_at",)
