@@ -1,4 +1,4 @@
-import 'package:blindds_app/providers/homework/validate_code_provider.dart';
+import 'package:blindds_app/providers/classroom/validate_code_provider.dart';
 import 'package:blindds_app/routes/app_routes.dart';
 import 'package:blindds_app/ui/dimens/app_dimensions.dart';
 import 'package:blindds_app/ui/widgets/buttons/primary_button.dart';
@@ -10,15 +10,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ActivityCodeScreen extends StatelessWidget {
-  const ActivityCodeScreen({super.key}); 
+  const ActivityCodeScreen({super.key});
 
- Future<void> _handleValidate({
-  required BuildContext context,
-  required ValidateCodeProvider provider,
-}) async {
-  final success = await provider.validateCode(); 
+  Future<void> _handleValidate({
+    required BuildContext context,
+    required ValidateCodeProvider provider,
+  }) async {
+    // provider já tem o código no estado
+    final success = await provider.validateCode();
 
-  if (context.mounted) {
+    if (!context.mounted) return;
+
     if (success) {
       Navigator.pushNamed(context, AppRoutes.userMood);
     } else {
@@ -27,8 +29,6 @@ class ActivityCodeScreen extends StatelessWidget {
       );
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -55,18 +55,21 @@ class ActivityCodeScreen extends StatelessWidget {
                     label: 'Código da Atividade',
                     hint: 'Ex: yAoiuLp7',
                     keyboardType: TextInputType.text,
-                    onChanged: (value) => provider.code = value, 
+                    onChanged: (value) => provider.code = value,
                     errorText: provider.errorMessage,
-                    prefixIcon: const Icon(Icons.code), 
+                    prefixIcon: const Icon(Icons.code),
                   ),
 
                   const SizedBox(height: AppDimensions.spaceM),
 
                   PrimaryButton(
-                     text: provider.isLoading ? 'Entrando...' : 'Entrar',
-                onPressed: provider.isLoading
-                    ? null
-                    : () => _handleValidate(context: context,provider:provider),
+                    text: provider.isLoading ? 'Entrando...' : 'Entrar',
+                    onPressed: provider.isLoading
+                        ? null
+                        : () => _handleValidate(
+                            context: context,
+                            provider: provider,
+                          ),
                   ),
                 ],
               ),
