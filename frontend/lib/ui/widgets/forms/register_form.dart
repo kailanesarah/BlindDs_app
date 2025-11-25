@@ -18,7 +18,7 @@ class RegisterForm extends StatelessWidget {
     final isValid = provider.validateFields();
     if (!isValid) return;
 
-    final success = await provider.register(); 
+    final success = await provider.register();
 
     if (success && context.mounted) {
       Navigator.pushNamed(context, AppRoutes.login);
@@ -40,8 +40,8 @@ class RegisterForm extends StatelessWidget {
               errorText: provider.nameError,
             ),
 
-          SizedBox(height: AppDimensions.spaceM),
-        
+            SizedBox(height: AppDimensions.spaceM),
+
             PrimaryTextField(
               label: 'Email',
               hint: 'lana@gmail.com',
