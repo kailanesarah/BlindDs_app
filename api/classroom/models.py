@@ -1,5 +1,7 @@
 from django.db import models
 import uuid
+import random
+import string
 from users.models import CustomUser
 
 
@@ -18,16 +20,19 @@ class ClassroomModel(models.Model):
         help_text="Identificador único da sala",
     )
 
-    code = models.IntegerField(
+    code = models.CharField(
+        max_length=6,
         unique=True,
         blank=True,
         null=True,
         verbose_name="Código da Sala",
-        help_text="Código único de 6 dígitos para a sala",
+        help_text="Código único de 6 caracteres para a sala",
     )
 
     name = models.CharField(
-        max_length=100, verbose_name="Nome da Sala", help_text="Nome da sala de aula"
+        max_length=100,
+        verbose_name="Nome da Sala",
+        help_text="Nome da sala de aula",
     )
 
     description = models.TextField(
@@ -65,9 +70,18 @@ class ClassroomModel(models.Model):
         help_text="Status atual da sala (ativa ou inativa)",
     )
 
+    def generate_code(self):
+        return "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
+
     def save(self, *args, **kwargs):
         if not self.code:
-            self.code = int(str(uuid.uuid4().int)[:6])
+            new_code = self.generate_code()
+
+            while ClassroomModel.objects.filter(code=new_code).exists():
+                new_code = self.generate_code()
+
+            self.code = new_code
+
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -31,7 +31,7 @@ class GoogleSignInButton extends StatelessWidget {
 
       final success = await provider.loginUserWithGoogle();
 
-      buttonsProvider.endGoogle(); 
+      buttonsProvider.endGoogle();
 
       if (success && context.mounted) {
         Navigator.of(context).pushReplacementNamed(AppRoutes.activityCode);

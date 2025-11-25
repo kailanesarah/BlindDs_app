@@ -5,18 +5,18 @@ import 'package:blindds_app/utils/helpers/generic_error_helper.dart';
 import 'package:dio/dio.dart';
 
 class ValidateCodeService {
-  final ApiClient apiClient = ApiClient();
-  late final Dio _dio;
+  final ApiClient apiClient;
 
-  ValidateCodeService() {
-    _dio = apiClient.dio;
-  }
+  ValidateCodeService(this.apiClient);
 
-  Future<Response> validateCode({required String atvCode}) async {
+  Dio get _dio => apiClient.dio;
+
+  Future<Response> validateCode({required String code}) async {
     try {
+      
       final response = await _dio.post(
-        'homework/validate_code/',
-        data: {"atv_code": atvCode},
+        'classroom/validate-code/',
+        data: {"code": code},
       );
 
       return response;
@@ -24,15 +24,13 @@ class ValidateCodeService {
       final message = DioErrorHelper.handle(e);
 
       if (e.type == DioExceptionType.connectionError) {
-        // erro de rede
         throw NetworkException(message);
-      } else {
-        // erro de API (400, 404, 500 etc)
-        throw ServerException(message);
       }
+
+      throw ServerException(message);
     } catch (e) {
-      // erro inesperado, não relacionado ao Dio
       final message = GenericErrorHelper.handle(e);
+
       throw AppException(message);
     }
   }

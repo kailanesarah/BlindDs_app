@@ -1,6 +1,5 @@
 import 'package:blindds_app/controllers/login_google_controller.dart';
 import 'package:blindds_app/utils/base_provider.dart';
-import 'package:blindds_app/utils/shared_preferences_utils.dart';
 
 class LoginGoogleProvider extends BaseProvider {
   // Dados da sessão
@@ -13,79 +12,64 @@ class LoginGoogleProvider extends BaseProvider {
 
   final LoginGoogleController controller;
 
-  LoginGoogleProvider({required this.controller}) {
-    // Carrega sessão automaticamente quando o provider é criado
-    loadSession();
+  LoginGoogleProvider({required this.controller});
+
+  /// Inicializa o provider carregando dados do Drift
+  Future<void> init() async {
+    print("Inicializando LoginGoogleProvider...");
+    await loadSession();
+    print("Sessão carregada: id=$id, name=$name");
   }
 
-  /// Realiza login com Google e salva sessão
+  /// Realiza login com Google
   Future<bool> loginUserWithGoogle() async {
     setLoading(true);
     clearError();
 
     try {
-      final sessionData = await controller.loginWithGoogle();
+      await controller.loginWithGoogle();
 
-      if (sessionData == null) {
-        setError("Falha ao autenticar com Google.");
-        return false;
-      }
+      // Depois do login, pega os dados salvos no Drift
+      final userData = await controller.getUserData();
 
-      // Atualiza os dados locais
-      id = sessionData['id'] ?? '';
-      name = sessionData['name'] ?? '';
-      email = sessionData['email'] ?? '';
-      userType = sessionData['user_type'] ?? '';
-      access = sessionData['access'] ?? '';
-      refresh = sessionData['refresh'] ?? '';
+      id = userData['id'] ?? '';
+      name = userData['name'] ?? '';
+      email = userData['email'] ?? '';
+      userType = userData['userType'] ?? '';
+      access = userData['access'] ?? '';
+      refresh = userData['refresh'] ?? '';
 
-      // Salvar no SharedPreferences
-      await SessionStorage.saveData({
-        'id': id,
-        'name': name,
-        'email': email,
-        'user_type': userType,
-        'access': access,
-        'refresh': refresh,
-      });
+      print("Dados do usuário após login: id=$id, name=$name, email=$email");
 
       notifyListeners();
       return true;
-
     } catch (e) {
       setError(e.toString().replaceAll("Exception: ", ""));
+      print("Erro no loginUserWithGoogle: $e");
       return false;
-
     } finally {
       setLoading(false);
     }
   }
 
-  /// Carrega sessão diretamente do SharedPreferences
+  /// Carrega sessão diretamente do Drift via controller
   Future<void> loadSession() async {
     setLoading(true);
 
-    final data = await SessionStorage.loadData([
-      'id',
-      'name',
-      'email',
-      'user_type',
-      'access',
-      'refresh',
-    ]);
+    final userData = await controller.getUserData();
 
-    id = data['id'] ?? '';
-    name = data['name'] ?? '';
-    email = data['email'] ?? '';
-    userType = data['user_type'] ?? '';
-    access = data['access'] ?? '';
-    refresh = data['refresh'] ?? '';
+    id = userData['id'] ?? '';
+    name = userData['name'] ?? '';
+    email = userData['email'] ?? '';
+    userType = userData['userType'] ?? '';
+    access = userData['access'] ?? '';
+    refresh = userData['refresh'] ?? '';
 
     setLoading(false);
     notifyListeners();
   }
 
-  /// Limpa toda a sessão
+  /// Limpa a sessão via controller
   Future<void> logout() async {
     id = '';
     name = '';
@@ -94,14 +78,7 @@ class LoginGoogleProvider extends BaseProvider {
     access = '';
     refresh = '';
 
-    await SessionStorage.clearData([
-      'id',
-      'name',
-      'email',
-      'user_type',
-      'access',
-      'refresh',
-    ]);
+    await controller.logout();
 
     notifyListeners();
   }

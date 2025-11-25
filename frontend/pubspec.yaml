@@ -45,6 +45,13 @@ dependencies:
   flutter_dotenv: ^6.0.0
   firebase_core: ^4.2.1
   firebase_auth: ^6.1.2
+  flutter_launcher_icons: ^0.14.4
+  drift: ^2.29.0
+  path: ^1.9.0
+  path_provider: ^2.1.0
+  drift_flutter: ^0.2.7
+  sqlite3_flutter_libs: ^0.5.0
+
 
 dev_dependencies:
   flutter_test:
@@ -56,7 +63,17 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  drift_dev: ^2.15.0
+  build_runner: ^2.4.0
   
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/public/images/Logo-1.png"
+  android_adaptive_icon_foreground: "assets/public/images/Logo-1.png"
+  android_adaptive_icon_background: "#04244A"
+  min_sdk_android: 21
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

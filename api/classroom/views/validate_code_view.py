@@ -14,7 +14,7 @@ class ClassroomSearchView(APIView):
 
     def post(self, request):
         try:
-            code = request.data.get("code")
+            code = request.data.get("code", "").strip().upper()
 
             if not code:
                 return Response(

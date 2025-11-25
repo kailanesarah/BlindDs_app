@@ -5,12 +5,9 @@ import 'package:blindds_app/utils/helpers/generic_error_helper.dart';
 import 'package:dio/dio.dart';
 
 class RegisterService {
-  final ApiClient apiClient = ApiClient();
-  late final Dio _dio;
+  final Dio _dio;
 
-  RegisterService() {
-    _dio = apiClient.dio;
-  }
+  RegisterService(ApiClient apiClient) : _dio = apiClient.dio;
 
   Future<Response> registerUser({
     required String name,
@@ -34,16 +31,12 @@ class RegisterService {
       final message = DioErrorHelper.handle(e);
 
       if (e.type == DioExceptionType.connectionError) {
-        // Erros de rede
         throw NetworkException(message);
       } else {
-        // Erros gerais do servidor
         throw ServerException(message);
       }
     } catch (e) {
-      // Erros não relacionados ao Dio
-      final message = GenericErrorHelper.handle(e);
-      throw AppException(message);
+      throw AppException(GenericErrorHelper.handle(e));
     }
   }
 }

@@ -25,10 +25,8 @@ class ActivityDetailsCard extends StatelessWidget {
       child: Card(
         elevation: 3,
         margin: const EdgeInsets.all(16),
-        color: colorScheme.surface,    
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
+        color: colorScheme.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
