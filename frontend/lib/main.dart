@@ -1,20 +1,24 @@
 import 'package:blindds_app/controllers/login_controller.dart';
 import 'package:blindds_app/controllers/login_google_controller.dart';
 import 'package:blindds_app/controllers/register_controller.dart';
+import 'package:blindds_app/controllers/token_controller.dart';
 import 'package:blindds_app/controllers/validate_code_controller.dart';
+import 'package:blindds_app/database/app_database.dart';
+import 'package:blindds_app/database/datasources/homework_local_datasource.dart';
 
 import 'package:blindds_app/providers/auth/login_provider.dart';
 import 'package:blindds_app/providers/auth/login_with_google_provider.dart';
 import 'package:blindds_app/providers/auth/register_provider.dart';
 import 'package:blindds_app/providers/login_buttons_provider.dart';
 import 'package:blindds_app/providers/theme/theme_provider.dart';
-import 'package:blindds_app/providers/homework/validate_code_provider.dart';
+import 'package:blindds_app/providers/classroom/validate_code_provider.dart';
 
+import 'package:blindds_app/services/api_client.dart';
 import 'package:blindds_app/services/auth/login_service.dart';
 import 'package:blindds_app/services/auth/login_google_service.dart';
 import 'package:blindds_app/services/auth/login_firebase_service.dart';
 import 'package:blindds_app/services/auth/register_service.dart';
-import 'package:blindds_app/services/homework/validate_code_service.dart';
+import 'package:blindds_app/services/classroom/validate_code_service.dart';
 
 import 'package:blindds_app/routes/app_pages_routes.dart';
 import 'package:blindds_app/routes/app_routes.dart';
@@ -23,7 +27,6 @@ import 'package:blindds_app/ui/style/theme/app_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -33,79 +36,92 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(const MyApp());
+  // Inicializa o banco Drift
+  final db = AppDatabase();
+
+  // Inicializa o TokenController (já cria Dio, RefreshService e ApiClient)
+  final tokenController = TokenController(db: db);
+
+  runApp(MyApp(
+    tokenController: tokenController,
+    apiClient: tokenController.apiClient,
+    db: db,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final TokenController tokenController;
+  final ApiClient apiClient;
+  final AppDatabase db;
+
+  const MyApp({
+    super.key,
+    required this.tokenController,
+    required this.apiClient,
+    required this.db,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => LoginButtonsProvider()),
 
-        ChangeNotifierProvider(
-  create: (_) => LoginButtonsProvider(),
-),
-
-        /// -------------------------------------
         /// LOGIN COM EMAIL/SENHA
-        /// -------------------------------------
-        ChangeNotifierProvider(
+        ChangeNotifierProvider<LoginProvider>(
           create: (_) {
+            final loginService = LoginService();
             final controller = LoginController(
-              loginService: LoginService(),
+              loginService: loginService,
+              tokenController: tokenController,
             );
             final provider = LoginProvider(controller: controller);
-            provider.loadSession(); 
+            Future.microtask(() => provider.loadSession());
             return provider;
           },
         ),
 
-        /// -------------------------------------
         /// LOGIN COM GOOGLE
-        /// -------------------------------------
-        ChangeNotifierProvider(
+        ChangeNotifierProvider<LoginGoogleProvider>(
           create: (_) {
+            final firebaseService = LoginFirebaseService();
+            final googleService = LoginGoogleService();
             final controller = LoginGoogleController(
-              firebaseService: LoginFirebaseService(),
-              googleService: LoginGoogleService(),
+              firebaseService: firebaseService,
+              googleService: googleService,
+              tokenController: tokenController,
             );
             final provider = LoginGoogleProvider(controller: controller);
-            provider.loadSession();
+            Future.microtask(() => provider.loadSession());
+            provider.init();
             return provider;
           },
         ),
 
-        /// -------------------------------------
         /// CADASTRO
-        /// -------------------------------------
-        ChangeNotifierProvider(
+        ChangeNotifierProvider<RegisterProvider>(
           create: (_) {
-            final controller = RegisterController(service: RegisterService());
+            final service = RegisterService(apiClient);
+            final controller = RegisterController(service: service);
             return RegisterProvider(controller: controller);
           },
         ),
 
-        /// -------------------------------------
         /// VALIDAÇÃO DO CÓDIGO
-        /// -------------------------------------
-        ChangeNotifierProvider(
+        ChangeNotifierProvider<ValidateCodeProvider>(
           create: (_) {
-            final controller =
-                ValidateCodeController(service: ValidateCodeService());
+            final service = ValidateCodeService(apiClient);
+            final controller = ValidateCodeController(
+              service: service,
+              local: ClassroomLocalDataSource(db),
+            );
             return ValidateCodeProvider(controller: controller);
           },
         ),
 
-        /// -------------------------------------
         /// TEMA
-        /// -------------------------------------
-        ChangeNotifierProvider(
-          create: (_) => ThemeProvider(),
-        ),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
           return MaterialApp(
@@ -113,7 +129,6 @@ class MyApp extends StatelessWidget {
             theme: AppThemes.lightTheme,
             darkTheme: AppThemes.darkTheme,
             themeMode: themeProvider.themeMode,
-
             builder: (context, child) {
               final mq = MediaQuery.of(context);
               return MediaQuery(
@@ -126,7 +141,6 @@ class MyApp extends StatelessWidget {
                 child: child!,
               );
             },
-
             initialRoute: AppRoutes.home,
             routes: AppRoutePages.routes,
           );
