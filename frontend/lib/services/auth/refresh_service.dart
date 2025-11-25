@@ -1,57 +1,44 @@
-import 'package:blindds_app/utils/exceptions/app_exceptions.dart';
-import 'package:blindds_app/utils/helpers/dio_error_helper.dart';
-import 'package:blindds_app/utils/helpers/generic_error_helper.dart';
+import 'package:blindds_app/database/datasources/user_local_datasource.dart';
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:logger/logger.dart';
 
 class RefreshService {
-  final Dio _dio;
+  final Dio dio;
+  final UserLocalDataSource local;
   final Logger _logger = Logger();
 
-  RefreshService(this._dio);
+  RefreshService({
+    required this.dio,
+    required this.local,
+  });
 
   Future<String?> refreshToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    final refresh = prefs.getString('refresh');
+    final refresh = await local.getRefreshToken();
 
     if (refresh == null) {
-      _logger.w('Nenhum refresh token encontrado no armazenamento.');
       return null;
     }
 
     try {
-      final response = await _dio.post(
-        '/auth/refresh/',
+      _logger.i('Renovando token...');
+
+      final response = await dio.post(
+        'auth/refresh/',
         data: {'refresh': refresh},
       );
 
       if (response.statusCode == 200 && response.data['access'] != null) {
         final newAccess = response.data['access'];
 
-        await prefs.setString('access', newAccess);
-        _logger.i('Token de acesso renovado com sucesso.');
+        // Atualiza APENAS o access (refresh permanece o mesmo)
+        await local.updateTokens(access: newAccess);
 
+        _logger.i('Token renovado com sucesso!');
         return newAccess;
-      } else {
-        _logger.w(
-          'Falha ao renovar token. Código: ${response.statusCode}, Dados: ${response.data}',
-        );
       }
-    } on DioException catch (e) {
-      final message = DioErrorHelper.handle(e);
-
-      if (e.type == DioExceptionType.connectionError) {
-        // Erros de rede
-        throw NetworkException(message);
-      } else {
-        // Erros gerais do servidor
-        throw ServerException(message);
-      }
-    } catch (e) {
-      // Erros não relacionados ao Dio
-      final message = GenericErrorHelper.handle(e);
-      throw AppException(message);
+    } catch (e, s) {
+      _logger.e('Erro ao renovar token', error: e, stackTrace: s);
+      return null;
     }
 
     return null;
