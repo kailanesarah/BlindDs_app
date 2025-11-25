@@ -16,16 +16,13 @@ class TokenController {
   TokenController({required this.db}) {
     local = UserLocalDataSource(db);
 
-    // 1. Uma única instância do Dio
     dio = Dio(BaseOptions(baseUrl: AppConfig.baseURL));
 
-    // 2. RefreshService usa o mesmo Dio
     refreshService = RefreshService(
       dio: dio,
       local: local,
     );
-
-    // 3. ApiClient também usa o MESMO Dio e o MESMO refreshService
+    
     apiClient = ApiClient(
       dio: dio,
       local: local,

@@ -23,7 +23,6 @@ class LoginGoogleController {
     try {
       // 1. Login no Firebase
       final UserCredential? credential = await firebaseService.signInWithGoogle();
-      print("Firebase credential: $credential");
 
       if (credential == null || credential.user == null) {
         throw Exception("Login cancelado pelo usuário.");
@@ -31,22 +30,18 @@ class LoginGoogleController {
 
       final user = credential.user;
       final idToken = await user?.getIdToken();
-      print("Firebase ID token: $idToken");
 
       if (idToken == null) {
         await FirebaseAuth.instance.signOut();
         throw Exception("Não foi possível obter o token do Firebase.");
       }
 
-      // 2. Envia o token para o backend Django e recebe resposta
       final response = await googleService.loginWithGoogle(idToken: idToken);
-      print("Resposta do backend (raw): ${response.data}");
 
       if (response.statusCode != 200) {
         throw Exception("Erro no servidor: ${response.data}");
       }
 
-      // 3. Ajuste para o formato {detail: ..., data: {user: ..., tokens: ...}}
       final rawData = response.data;
       final data = rawData is Map ? rawData : jsonDecode(rawData.toString());
 
@@ -64,7 +59,7 @@ class LoginGoogleController {
       final tokens = Map<String, dynamic>.from(backendData['tokens']);
 
       final id = userData["id"]?.toString();
-      final name = userData["username"]; // backend envia 'username'
+      final name = userData["username"]; 
       final email = userData["email"];
       final userType = userData["user_type"];
       final access = tokens["access"];
@@ -74,7 +69,6 @@ class LoginGoogleController {
         throw Exception("Login retornou dados inválidos");
       }
 
-      // 4. Salva dados no Drift via TokenController
       await tokenController.local.saveUser(
         id: id,
         name: name ?? '',
@@ -84,7 +78,6 @@ class LoginGoogleController {
         refresh: refresh,
       );
 
-      print("Login Google realizado com sucesso: $name, $email");
     } on DioException catch (e) {
       throw Exception(DioErrorHelper.handle(e));
     } catch (e) {
