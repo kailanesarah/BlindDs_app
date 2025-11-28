@@ -1,81 +1,86 @@
-import 'dart:convert';
+import 'package:blindds_app/controllers/login_controller.dart';
 import 'package:blindds_app/utils/base_provider.dart';
-import 'package:blindds_app/utils/helpers/dio_error_helper.dart';
-import 'package:blindds_app/utils/helpers/generic_error_helper.dart';
-import 'package:blindds_app/utils/validators.dart';
-import 'package:blindds_app/providers/session/load_session_provider.dart';
-import 'package:blindds_app/providers/session/register_session_provider.dart';
-import 'package:blindds_app/services/login_service.dart';
-import 'package:provider/provider.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 
 class LoginProvider extends BaseProvider {
   String email = '';
   String password = '';
 
-  String? emailError;
-  String? passwordError;
+  String id = '';
+  String name = '';
+  String userType = '';
+  String access = '';
+  String refresh = '';
 
-  final LoginService _loginService;
-  final RegisterSessionProvider _registerSessionProvider;
+  final LoginController controller;
 
-  LoginProvider({
-    required LoginService loginService,
-    required RegisterSessionProvider registerSessionProvider,
-  }) : _loginService = loginService,
-       _registerSessionProvider = registerSessionProvider;
+  LoginProvider({required this.controller});
 
-  Future<bool> login(BuildContext context) async {
-    emailError = Validators.validateEmail(email);
-    passwordError = Validators.validatePassword(password);
+  /// Inicializa sessão async
+  Future<void> init() async {
+    await loadSession();
+  }
+
+  /// Carrega dados do Drift
+  Future<void> loadSession() async {
+    setLoading(true);
     clearError();
 
-    if (emailError != null || passwordError != null) {
-      notifyListeners();
-      return false;
-    }
-
-    setLoading(true);
-
     try {
-      final Response response = await _loginService.loginUser(
-        email: email,
-        password: password,
-      );
+      final userData = await controller.getUserData();
+      id = userData['id'] ?? '';
+      name = userData['name'] ?? '';
+      userType = userData['userType'] ?? '';
+      access = userData['access'] ?? '';
+      refresh = userData['refresh'] ?? '';
 
-      if (response.statusCode == 200) {
-        final data = response.data is Map
-            ? response.data
-            : jsonDecode(response.data);
-
-        // Salva e atualiza sessão
-        await _registerSessionProvider.saveSession(data);
-
-        final loadSession = Provider.of<LoadSessionProvider>(
-          context,
-          listen: false,
-        );
-        loadSession.updateSession(data);
-
-        setLoading(false);
-        return true;
-      } else {
-        final body = response.data is Map
-            ? response.data
-            : jsonDecode(response.data);
-        setError(body['detail'] ?? 'Falha ao fazer login.');
-        setLoading(false);
-        return false;
-      }
-    } on DioException catch (e) {
-      setError(DioErrorHelper.handle(e));
-      setLoading(false);
-      return false;
+      print("USER LOADED: $name");
     } catch (e) {
-      setError(GenericErrorHelper.handle(e));
+      id = '';
+      name = '';
+      userType = '';
+      access = '';
+      refresh = '';
+    } finally {
       setLoading(false);
-      return false;
+      notifyListeners();
     }
   }
+
+  Future<bool> loginUser() async {
+    setLoading(true);
+    clearError();
+
+    try {
+      await controller.login(email, password);
+      await loadSession();
+      return true;
+    } catch (e) {
+      setError(e.toString().replaceAll("Exception: ", ""));
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  Future<void> logout() async {
+    setLoading(true);
+    clearError();
+
+    try {
+      await controller.clearUserData();
+
+      id = '';
+      name = '';
+      userType = '';
+      access = '';
+      refresh = '';
+      notifyListeners();
+    } catch (e) {
+      setError(e.toString().replaceAll("Exception: ", ""));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  bool get isLoggedIn => access.isNotEmpty;
 }

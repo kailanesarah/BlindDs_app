@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:blindds_app/providers/auth/register_provider.dart';
 import 'package:blindds_app/routes/app_routes.dart';
-import 'package:blindds_app/ui/dimens/app_dimensions.dart';
 import 'package:blindds_app/ui/text/app_lexend_text_styles.dart';
 import 'package:blindds_app/ui/widgets/buttons/primary_button.dart';
 import 'package:blindds_app/ui/widgets/fields/primary_field.dart';
 import 'package:blindds_app/ui/widgets/buttons/selector_button.dart';
+import 'package:blindds_app/ui/dimens/app_dimensions.dart';
 
 class RegisterForm extends StatelessWidget {
   const RegisterForm({super.key});
@@ -19,6 +19,7 @@ class RegisterForm extends StatelessWidget {
     if (!isValid) return;
 
     final success = await provider.register();
+
     if (success && context.mounted) {
       Navigator.pushNamed(context, AppRoutes.login);
     }
@@ -28,64 +29,60 @@ class RegisterForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<RegisterProvider>(
       builder: (context, provider, _) {
-        return Semantics(
-          container: true,
-          label: 'Formulário de cadastro',
-          hint:
-              'Preencha nome, e-mail, senha e selecione se você é aluno ou professor',
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              PrimaryTextField(
-                label: 'Nome',
-                hint: 'Lana Leal',
-                keyboardType: TextInputType.name,
-                prefixIcon: const Icon(Icons.person),
-                onChanged: (value) => provider.name = value,
-                errorText: provider.nameError,
-              ),
-              const SizedBox(height: AppDimensions.spaceM),
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            PrimaryTextField(
+              label: 'Nome',
+              hint: 'Lana Leal',
+              prefixIcon: const Icon(Icons.person),
+              onChanged: (value) => provider.name = value,
+              errorText: provider.nameError,
+            ),
 
-              PrimaryTextField(
-                label: 'Email',
-                hint: 'lana@gmail.com',
-                keyboardType: TextInputType.emailAddress,
-                prefixIcon: const Icon(Icons.email),
-                onChanged: (value) => provider.email = value,
-                errorText: provider.emailError,
-              ),
-              const SizedBox(height: AppDimensions.spaceM),
+            SizedBox(height: AppDimensions.spaceM),
 
-              PrimaryTextField(
-                label: 'Senha',
-                hint: 'senha123',
-                keyboardType: TextInputType.visiblePassword,
-                obscureText: true,
-                prefixIcon: const Icon(Icons.password),
-                onChanged: (value) => provider.password = value,
-                errorText: provider.passwordError,
-              ),
-              const SizedBox(height: AppDimensions.spaceL),
+            PrimaryTextField(
+              label: 'Email',
+              hint: 'lana@gmail.com',
+              prefixIcon: const Icon(Icons.email),
+              onChanged: (value) => provider.email = value,
+              errorText: provider.emailError,
+            ),
 
-              _buildUserTypeSelector(provider),
-              const SizedBox(height: AppDimensions.spaceL),
+            SizedBox(height: AppDimensions.spaceM),
 
-              PrimaryButton(
-                text: provider.isLoading ? 'Cadastrando...' : 'Cadastre-se',
-                onPressed: provider.isLoading
-                    ? null
-                    : () => _handleRegister(context, provider),
-              ),
+            PrimaryTextField(
+              label: 'Senha',
+              hint: 'senha123',
+              obscureText: true,
+              prefixIcon: const Icon(Icons.password),
+              onChanged: (value) => provider.password = value,
+              errorText: provider.passwordError,
+            ),
 
-              if (provider.errorMessage != null) ...[
-                const SizedBox(height: AppDimensions.spaceM),
-                Text(
+            SizedBox(height: AppDimensions.spaceM),
+
+            _buildUserTypeSelector(provider),
+
+            SizedBox(height: AppDimensions.spaceM),
+
+            PrimaryButton(
+              text: provider.isLoading ? 'Cadastrando...' : 'Cadastre-se',
+              onPressed: provider.isLoading
+                  ? null
+                  : () => _handleRegister(context, provider),
+            ),
+
+            if (provider.errorMessage != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Text(
                   provider.errorMessage!,
                   style: const TextStyle(color: Colors.red),
                 ),
-              ],
-            ],
-          ),
+              ),
+          ],
         );
       },
     );

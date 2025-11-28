@@ -1,5 +1,5 @@
-import 'package:blindds_app/providers/session/load_session_provider.dart';
-import 'package:blindds_app/ui/colors/app_colors.dart';
+import 'package:blindds_app/providers/auth/login_provider.dart';
+import 'package:blindds_app/ui/style/colors/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:blindds_app/ui/widgets/appHeader/icons_app_bar.dart';
 import 'package:blindds_app/ui/widgets/appHeader/user_profile_app_bar.dart';
@@ -10,9 +10,9 @@ class CustomAppHeader extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LoadSessionProvider>(
+    return Consumer<LoginProvider>(
       builder: (context, session, child) {
-        if (!session.isLoaded) {
+        if (session.isLoading) {
           return SafeArea(
             child: Container(
               height: 80,
@@ -23,16 +23,13 @@ class CustomAppHeader extends StatelessWidget implements PreferredSizeWidget {
           );
         }
 
-        final nameUser = session.username ?? session.name ?? 'Usuário';
+        final nameUser = session.name.isNotEmpty ? session.name : "Carregando...";
 
         return SafeArea(
           child: Container(
             height: 80,
             color: AppColors.bluePrimary,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 10.0,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,

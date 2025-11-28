@@ -1,72 +1,74 @@
-import 'package:blindds_app/config/app_config.dart';
+import 'package:blindds_app/database/datasources/user_local_datasource.dart';
+import 'package:blindds_app/services/auth/refresh_service.dart';
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:blindds_app/services/refresh_service.dart';
-import 'dart:developer';
+import 'dart:developer' as developer;
 
 class ApiClient {
-  final Dio dio = Dio(BaseOptions(baseUrl: AppConfig.baseURL));
-  late final RefreshService refreshService = RefreshService(dio);
+  final Dio dio;
+  final UserLocalDataSource local;
+  final RefreshService refreshService;
 
-  ApiClient() {
-    try {
-      dio.interceptors.add(
-        InterceptorsWrapper(
-          //Intercepta a requisição antes de ser enviada
-          onRequest: (options, handler) async {
-            try {
-              final prefs = await SharedPreferences.getInstance();
-              final token = prefs.getString('access');
+  ApiClient({
+    required this.dio,
+    required this.local,
+    required this.refreshService,
+  }) {
+    _setupInterceptors();
+  }
 
-              if (token != null) {
-                options.headers['Authorization'] = 'Bearer $token';
-              }
-            } catch (e, stack) {
-              log(
-                'Erro ao recuperar token do SharedPreferences: $e',
-                stackTrace: stack,
+  void _setupInterceptors() {
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          // Sempre pega o token atualizado
+          final token = await local.getAccessToken();
+
+          developer.log(
+            '🔐 Enviando requisição com token: $token',
+            name: 'ApiClient',
+          );
+
+          if (token != null) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+
+          handler.next(options);
+        },
+
+        onError: (error, handler) async {
+          // Se error 401 → tenta refresh
+          if (error.response?.statusCode == 401) {
+            developer.log(
+              '⚠ Token expirou. Tentando renovar...',
+              name: 'ApiClient',
+            );
+
+            final newToken = await refreshService.refreshToken();
+
+            if (newToken != null) {
+              developer.log(
+                '🔄 Novo token obtido! Repetindo requisição...',
+                name: 'ApiClient',
               );
+
+              // Coloca novo token
+              error.requestOptions.headers['Authorization'] =
+                  'Bearer $newToken';
+
+              // Repete requisição com novo token
+              final retryResponse = await dio.fetch(error.requestOptions);
+              return handler.resolve(retryResponse);
             }
 
-            return handler.next(options);
-          },
+            developer.log(
+              '❌ Falha ao renovar token.',
+              name: 'ApiClient',
+            );
+          }
 
-          // Intercepta erros (como 401 Unauthorized)
-          onError: (DioException e, handler) async {
-            try {
-              if (e.response?.statusCode == 401) {
-                log('Token expirado. Tentando atualizar...');
-
-                final newToken = await refreshService.refreshToken();
-
-                if (newToken != null) {
-                  final prefs = await SharedPreferences.getInstance();
-                  await prefs.setString('access', newToken);
-
-                  e.requestOptions.headers['Authorization'] =
-                      'Bearer $newToken';
-
-                  // Reenvia a requisição original com o novo token
-                  final cloneReq = await dio.fetch(e.requestOptions);
-
-                  return handler.resolve(cloneReq);
-                } else {
-                  log('Falha ao renovar o token: refresh retornou null');
-                }
-              }
-            } catch (err, stack) {
-              log(
-                'Erro ao tentar renovar token ou refazer requisição: $err',
-                stackTrace: stack,
-              );
-            }
-
-            return handler.next(e);
-          },
-        ),
-      );
-    } catch (e, stack) {
-      log('Erro ao configurar interceptors do Dio: $e', stackTrace: stack);
-    }
+          handler.next(error);
+        },
+      ),
+    );
   }
 }

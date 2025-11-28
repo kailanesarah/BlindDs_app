@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "users",
     "authentication",
+    "homework",
+    "classroom",
     # DRF + autenticação
     "rest_framework",
     "rest_framework.authtoken",  # Mantém para Key

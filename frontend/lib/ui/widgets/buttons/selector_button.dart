@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:blindds_app/ui/colors/app_colors.dart';
 import 'package:blindds_app/ui/text/app_lexend_text_styles.dart';
 
 class UserTypeSelector extends StatefulWidget {
@@ -38,14 +37,18 @@ class _UserTypeSelectorState extends State<UserTypeSelector> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _buildOption('student', 'Aluno'),
-        _buildOption('professor', 'Professor'),
+        _buildOption(context, 'student', 'Aluno'),
+        _buildOption(context, 'professor', 'Professor'),
       ],
     );
   }
 
-  Widget _buildOption(String value, String label) {
+  Widget _buildOption(BuildContext context, String value, String label) {
     final bool isSelected = _selected == value;
+    final colorScheme = Theme.of(context).colorScheme;
+    final textColor = isSelected
+        ? colorScheme.primary
+        : colorScheme.onSurface; // <- adapta ao tema
 
     return Semantics(
       button: true,
@@ -61,13 +64,13 @@ class _UserTypeSelectorState extends State<UserTypeSelector> {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: isSelected
-                  ? AppColors.bluePrimary.withOpacity(0.1)
+                  ? colorScheme.primary.withOpacity(0.1)
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: isSelected
-                    ? AppColors.bluePrimary
-                    : Colors.grey.shade300,
+                    ? colorScheme.primary
+                    : colorScheme.outlineVariant.withOpacity(0.4),
               ),
             ),
             child: Row(
@@ -78,7 +81,9 @@ class _UserTypeSelectorState extends State<UserTypeSelector> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: isSelected ? AppColors.bluePrimary : Colors.grey,
+                      color: isSelected
+                          ? colorScheme.primary
+                          : colorScheme.outline,
                       width: 2,
                     ),
                   ),
@@ -88,7 +93,7 @@ class _UserTypeSelectorState extends State<UserTypeSelector> {
                             width: 10,
                             height: 10,
                             decoration: BoxDecoration(
-                              color: AppColors.bluePrimary,
+                              color: colorScheme.primary,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -99,7 +104,7 @@ class _UserTypeSelectorState extends State<UserTypeSelector> {
                 Text(
                   label,
                   style: SecondaryTextStyles.bodyBold.copyWith(
-                    color: isSelected ? AppColors.bluePrimary : Colors.black,
+                    color: textColor,
                   ),
                 ),
               ],

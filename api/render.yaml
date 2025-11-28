@@ -1,7 +1,6 @@
 version: '1'
 
 services:
-  # 1. Serviço Web Django Backend
   - type: web
     name: BlindDs_app
     env: python
@@ -12,6 +11,9 @@ services:
       pip install -r requirements.txt
       DJANGO_SETTINGS_MODULE=cors.settings python manage.py collectstatic --noinput
       DJANGO_SETTINGS_MODULE=cors.settings python manage.py migrate
+      DJANGO_SETTINGS_MODULE=cors.settings python manage.py seed
+
+
     
     envVars:
       - key: PYTHON_VERSION
@@ -27,8 +29,7 @@ services:
           type: pserv
           name: blindDS-db
           envVar: DATABASE_URL
-          
-  # 2. Serviço de Banco de Dados PostgreSQL
+
   - type: pgbundle
     name: blindDS-db
     plan: starter
