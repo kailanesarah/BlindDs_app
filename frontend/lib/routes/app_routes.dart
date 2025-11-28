@@ -7,4 +7,5 @@ class AppRoutes {
 
   // Nova rota para a tela de código da atividade
   static const String activityCode = '/user/activity-code';
+  static const String activityHistory = '/user/activity-history';
 }
