@@ -15,7 +15,7 @@ class HomeworkCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        classroom_id = self.kwargs.get("classroom_id")
+        classroom_id = self.kwargs.get("pk")
         serializer.save(user=self.request.user, classroom_id=classroom_id)
 
     def create(self, request, *args, **kwargs):
