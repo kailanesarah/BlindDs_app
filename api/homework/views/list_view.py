@@ -18,9 +18,17 @@ class HomeworkListView(ListAPIView):
 
     def list(self, request, *args, **kwargs):
         try:
+            pk = kwargs.get("pk")
 
-            queryset = self.get_queryset()
-            data = self.get_serializer(queryset, many=True).data
+            try:
+                classroom = HomeworkModel.objects.filter(classroom=pk)
+            except HomeworkModel.DoesNotExist:
+                return Response(
+                    {"message": "Atividade não encontrada."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            data = self.get_serializer(classroom, many=True).data
 
             return Response(
                 {

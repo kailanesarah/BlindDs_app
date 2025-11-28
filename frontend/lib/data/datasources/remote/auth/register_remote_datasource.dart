@@ -1,0 +1,42 @@
+import 'package:blindds_app/data/datasources/remote/api_client_remote_datasource.dart';
+import 'package:blindds_app/utils/exceptions/app_exceptions.dart';
+import 'package:blindds_app/utils/helpers/dio_error_helper.dart';
+import 'package:blindds_app/utils/helpers/generic_error_helper.dart';
+import 'package:dio/dio.dart';
+
+class RegisterRemoteDataSource {
+  final Dio _dio;
+
+  RegisterRemoteDataSource(ApiClient apiClient) : _dio = apiClient.dio;
+
+  Future<Response> registerUser({
+    required String name,
+    required String email,
+    required String password,
+    required String userType,
+  }) async {
+    try {
+      final response = await _dio.post(
+        'auth/registration/',
+        data: {
+          'name': name,
+          'email': email,
+          'password': password,
+          'user_type': userType,
+        },
+      );
+
+      return response;
+    } on DioException catch (e) {
+      final message = DioErrorHelper.handle(e);
+
+      if (e.type == DioExceptionType.connectionError) {
+        throw NetworkException(message);
+      } else {
+        throw ServerException(message);
+      }
+    } catch (e) {
+      throw AppException(GenericErrorHelper.handle(e));
+    }
+  }
+}

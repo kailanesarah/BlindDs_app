@@ -9,12 +9,12 @@ from homework.views import (
 
 urlpatterns = [
     path(
-        "homework/<uuid:classroom_id>/",
+        "homework/<uuid:pk>/",
         HomeworkCreateView.as_view(),
         name="homework_create",
     ),
     path(
-        "homework/list/",
+        "homework/list/<uuid:pk>/",
         HomeworkListView.as_view(),
         name="homework_list",
     ),
