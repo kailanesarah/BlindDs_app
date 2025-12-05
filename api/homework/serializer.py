@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from homework.models import HomeworkModel
+from rest_framework import serializers
 
 
 class HomeworkSerializer(serializers.ModelSerializer):
@@ -15,14 +15,14 @@ class HomeworkSerializer(serializers.ModelSerializer):
             "deadline",
             "created_at",
             "updated_at",
-            "user_id",
+            "professor",
             "classroom",
         ]
         read_only_fields = [
             "id",
             "created_at",
             "updated_at",
-            "user_id",
+            "professor",
             "classroom",
         ]
 
