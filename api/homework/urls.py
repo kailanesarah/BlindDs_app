@@ -1,10 +1,10 @@
 from django.urls import path
 from homework.views import (
     HomeworkCreateView,
+    HomeworkDeleteView,
     HomeworkListView,
     HomeworkRetrieveView,
     HomeworkUpdateView,
-    HomeworkDeleteView,
 )
 
 urlpatterns = [

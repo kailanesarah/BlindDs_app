@@ -1,16 +1,28 @@
-from django.urls import path
 from classroom.views import (
-    ClassroomSearchView,
+    ClassroomCreateView,
+    ClassroomDeleteView,
     ClassroomListView,
     ClassroomRetrieveView,
-    ClassroomCreateView,
+    ClassroomSearchView,
     ClassroomUpdateView,
-    ClassroomDeleteView,
+    ListClassroomsByProfessorView,
+    ListClassroomsByStudentView,
 )
+from django.urls import path
 
 urlpatterns = [
     path("classroom/", ClassroomCreateView.as_view(), name="classroom_create"),
     path("classroom/list/", ClassroomListView.as_view(), name="classroom_list"),
+    path(
+        "classroom/student/list/",
+        ListClassroomsByStudentView.as_view(),
+        name="classroom_list_by_student",
+    ),
+    path(
+        "classroom/professor/list/",
+        ListClassroomsByProfessorView.as_view(),
+        name="classroom_list_by_student",
+    ),
     path(
         "classroom/<uuid:pk>/", ClassroomRetrieveView.as_view(), name="classroom_detail"
     ),

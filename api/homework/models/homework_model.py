@@ -1,7 +1,9 @@
-from django.db import models
 import uuid
-from users.models import CustomUser
+
 from classroom.models import ClassroomModel
+from django.db import models
+
+from users.models import CustomUser
 
 
 class HomeworkModel(models.Model):
@@ -47,7 +49,7 @@ class HomeworkModel(models.Model):
         help_text="Data e hora da última atualização da atividade",
     )
 
-    user = models.ForeignKey(
+    professor = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
         related_name="homeworks",
@@ -62,6 +64,11 @@ class HomeworkModel(models.Model):
         verbose_name="Sala",
         help_text="Sala à qual esta atividade pertence",
     )
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Atividade"
+        verbose_name_plural = "Atividades"
 
     def __str__(self):
         return f"{self.name} ({self.id})"

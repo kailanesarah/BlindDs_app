@@ -1,10 +1,11 @@
+import logging
+
 from classroom.models import ClassroomModel
 from classroom.serializers import ClassroomSerializer
+from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -18,11 +19,12 @@ class ClassroomListView(ListAPIView):
 
     def list(self, request, *args, **kwargs):
         try:
-            if request.user.user_type != "professor":
+            if request.user.user_type != "admin":
                 return Response(
                     {
                         "message": "Acesso negado. "
-                        + "Apenas professores podem listar as salas de aula."
+                        + "Apenas administradores do sistema"
+                        + "podem listar as salas de aula."
                     },
                     status=status.HTTP_403_FORBIDDEN,
                 )

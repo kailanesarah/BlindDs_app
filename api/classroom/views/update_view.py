@@ -1,10 +1,11 @@
+import logging
+
 from classroom.models import ClassroomModel
 from classroom.serializers import ClassroomSerializer
+from rest_framework import status
 from rest_framework.generics import UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
-import logging
 
 logger = logging.getLogger(__name__)
 
