@@ -17,7 +17,7 @@ class UserLocalDataSource {
             id: Value(user.id),
             username: Value(user.username),
             email: Value(user.email),
-            userType: Value(user.userType), 
+            userType: Value(user.userType),
             access: Value(user.accessToken),
             refresh: Value(user.refreshToken),
           ),
