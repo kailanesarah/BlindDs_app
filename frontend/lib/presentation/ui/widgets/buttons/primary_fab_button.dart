@@ -4,11 +4,7 @@ class PrimaryFabButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String semanticLabel;
   final String tooltip;
-
-  /// Tamanho total do botão quadrado (default: 60)
   final double size;
-
-  /// Tamanho do ícone (default: 28)
   final double iconSize;
 
   const PrimaryFabButton({
@@ -34,7 +30,7 @@ class PrimaryFabButton extends StatelessWidget {
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(12),
-            ), // quadrado com leve arredondamento
+            ),
           ),
           onPressed: onPressed,
           tooltip: tooltip,
