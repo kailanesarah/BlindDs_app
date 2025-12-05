@@ -14,7 +14,7 @@ class LoginForm extends StatelessWidget {
   Future<void> _handleLogin(
     BuildContext context,
     AuthProvider authProvider,
-    LoginButtonsProvider buttonsProvider, 
+    LoginButtonsProvider buttonsProvider,
   ) async {
     buttonsProvider.startLogin();
 
@@ -23,7 +23,7 @@ class LoginForm extends StatelessWidget {
     buttonsProvider.endLogin();
 
     if (success && context.mounted) {
-      Navigator.pushNamed(context, AppRoutes.activityCode);
+      Navigator.pushNamed(context, AppRoutes.studentClassroomsDecision);
     }
   }
 
