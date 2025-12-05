@@ -1,4 +1,4 @@
-import 'package:blindds_app/data/repository/register_repository.dart';
+import 'package:blindds_app/data/repository/auth/register_repository.dart';
 
 class RegisterService {
   final RegisterRepository _repository;

@@ -1,5 +1,5 @@
-import 'package:blindds_app/data/repository/auth_google_repository.dart';
-import 'package:blindds_app/data/repository/auth_repository.dart';
+import 'package:blindds_app/data/repository/auth/auth_google_repository.dart';
+import 'package:blindds_app/data/repository/auth/auth_repository.dart';
 import 'package:blindds_app/domain/entities/user_entity.dart';
 
 class AuthService {
