@@ -1,10 +1,11 @@
-from rest_framework.generics import RetrieveAPIView
+import logging
+
 from homework.models import HomeworkModel
 from homework.serializer import HomeworkSerializer
+from rest_framework import status
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -16,16 +17,7 @@ class HomeworkRetrieveView(RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         try:
-
-            pk = kwargs.get("pk")
-
-            try:
-                homework = HomeworkModel.objects.get(id=pk)
-            except HomeworkModel.DoesNotExist:
-                return Response(
-                    {"message": "Atividade não encontrada."},
-                    status=status.HTTP_404_NOT_FOUND,
-                )
+            homework = self.get_object()
 
             serializer = self.get_serializer(homework)
 
@@ -37,6 +29,11 @@ class HomeworkRetrieveView(RetrieveAPIView):
                 status=status.HTTP_200_OK,
             )
 
+        except HomeworkModel.DoesNotExist:
+            return Response(
+                {"message": "Atividade não encontrada."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
         except Exception as e:
             logger.error(f"Erro ao recuperar atividade: {str(e)}")
             return Response(

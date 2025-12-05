@@ -1,10 +1,11 @@
-from rest_framework.generics import ListAPIView
+import logging
+
 from homework.models import HomeworkModel
 from homework.serializer import HomeworkSerializer
+from rest_framework import status
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
-import logging
 
 logger = logging.getLogger(__name__)
 
