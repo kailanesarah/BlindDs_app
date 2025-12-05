@@ -2,7 +2,7 @@ import 'package:blindds_app/routes/app_routes.dart';
 import 'package:blindds_app/presentation/ui/style/colors/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:blindds_app/presentation/ui/dimens/app_dimensions.dart';
-import 'package:blindds_app/presentation/ui/widgets/images/login_banner.dart';
+import 'package:blindds_app/presentation/ui/widgets/images/banner_image.dart';
 import 'package:blindds_app/presentation/ui/widgets/text/header.dart';
 import 'package:blindds_app/presentation/ui/widgets/buttons/primary_button.dart';
 
@@ -23,7 +23,10 @@ class WelcomeScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              LoginBanner(),
+              BannerWidget(
+                urlBanner: "assets/public/images/banner.png",
+                semanticLabel: "Imagem tela de login",
+              ),
               SizedBox(height: AppDimensions.spaceXL),
               Header(
                 title: 'Bem vindo(a)!',
@@ -32,7 +35,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
               SizedBox(height: AppDimensions.spaceXL),
               PrimaryButton(
-                text: 'Cadastre-se',
+                text: 'Faça seu cadastro',
                 onPressed: () => {
                   Navigator.pushNamed(context, AppRoutes.register),
                 },
