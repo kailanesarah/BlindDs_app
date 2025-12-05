@@ -1,7 +1,6 @@
 import 'package:blindds_app/data/datasources/local/app_database.dart';
 
 class ClassroomEntity {
-
   final String id;
   final String code;
   final String name;
@@ -20,7 +19,7 @@ class ClassroomEntity {
 
   @override
   String toString() {
-  return 'ClassroomEntity(id: $id, name: $name, description: $description,  created_at: $createdAt, updated_at: $updatedAt)';
+    return 'ClassroomEntity(id: $id, name: $name, description: $description,  created_at: $createdAt, updated_at: $updatedAt)';
   }
 
   factory ClassroomEntity.fromJson(json) {
@@ -43,6 +42,5 @@ class ClassroomEntity {
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
     );
-  } 
-
+  }
 }

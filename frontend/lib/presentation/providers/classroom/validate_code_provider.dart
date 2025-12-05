@@ -7,7 +7,7 @@ class ValidateCodeProvider extends BaseProvider {
   String codeInput = '';
 
   ValidateCodeProvider({required ValidateCodeService service})
-      : _service = service;
+    : _service = service;
 
   void setCodeInput(String value) {
     codeInput = value;

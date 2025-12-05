@@ -27,9 +27,7 @@ class AuthRepository {
       await _localDataSource.saveUser(userEntity);
 
       return userEntity;
-
     } on DioException catch (e) {
-
       throw Exception(DioErrorHelper.handle(e));
     } on Exception catch (e) {
       throw Exception(GenericErrorHelper.handle(e));

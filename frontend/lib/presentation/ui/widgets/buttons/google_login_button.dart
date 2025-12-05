@@ -34,7 +34,7 @@ class GoogleSignInButton extends StatelessWidget {
       buttonsProvider.endGoogle();
 
       if (success && context.mounted) {
-        Navigator.of(context).pushReplacementNamed(AppRoutes.activityCode);
+        Navigator.pushNamed(context, AppRoutes.studentClassroomsDecision);
       } else if (auth.errorMessage != null && context.mounted) {
         _showError(context, auth.errorMessage!);
       }

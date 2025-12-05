@@ -18,8 +18,6 @@ class AuthRemoteDataSource {
       );
 
       return response;
-      
-
     } on DioException catch (e) {
       final message = DioErrorHelper.handle(e);
 

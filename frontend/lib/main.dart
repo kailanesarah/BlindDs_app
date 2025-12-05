@@ -1,6 +1,15 @@
 // -----------------------------------------------------------
 // PACOTES FLUTTER / TERCEIROS
 // -----------------------------------------------------------
+import 'package:blindds_app/data/datasources/remote/classroom/classroom_remote_datasource.dart';
+import 'package:blindds_app/data/datasources/remote/classroom/student_classrooms_remote_datasource.dart';
+import 'package:blindds_app/data/repository/classroom/classroom_repository.dart';
+import 'package:blindds_app/data/repository/classroom/student_classrooms_repository.dart';
+import 'package:blindds_app/domain/services/classroom/classroom_service.dart';
+import 'package:blindds_app/domain/services/classroom/student_classrooms_service.dart';
+import 'package:blindds_app/presentation/providers/classroom/classroom_provider.dart';
+import 'package:blindds_app/presentation/providers/classroom/student_classrooms_provider.dart';
+import 'package:blindds_app/presentation/providers/classroom/student_classrooms_decision_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -26,11 +35,11 @@ import 'package:blindds_app/data/datasources/local/classroom/classroom_local_dat
 // -----------------------------------------------------------
 // REPOSITORIES
 // -----------------------------------------------------------
-import 'package:blindds_app/data/repository/auth_repository.dart';
-import 'package:blindds_app/data/repository/auth_google_repository.dart';
-import 'package:blindds_app/data/repository/register_repository.dart';
-import 'package:blindds_app/data/repository/validade_code_repository.dart';
-import 'package:blindds_app/data/repository/token_repository.dart';
+import 'package:blindds_app/data/repository/auth/auth_repository.dart';
+import 'package:blindds_app/data/repository/auth/auth_google_repository.dart';
+import 'package:blindds_app/data/repository/auth/register_repository.dart';
+import 'package:blindds_app/data/repository/classroom/validade_code_repository.dart';
+import 'package:blindds_app/data/repository/auth/token_repository.dart';
 
 // -----------------------------------------------------------
 // SERVICES / DOMÍNIO
@@ -102,7 +111,11 @@ class MyApp extends StatelessWidget {
 
     // DATASOURCES CLASSROOM
     final classroomLocalDataSource = ClassroomLocalDataSource(db);
-    final classroomRemoteDataSource = ValidateCodeDataSource(api: apiClient);
+    final validateCodeDataSource = ValidateCodeDataSource(api: apiClient);
+    final studentClassroomsRemoteDataSource = StudentClassroomsRemoteDataSource(
+      api: apiClient,
+    );
+    final classroomRemoteDataSource = ClassroomRemoteDataSource(api: apiClient);
 
     // -----------------------------
     // REPOSITORIES
@@ -119,6 +132,15 @@ class MyApp extends StatelessWidget {
     );
 
     final validateCodeRepository = ValidateCodeRepository(
+      remoteDataSource: validateCodeDataSource,
+    );
+
+    final getStudentClassroomsRepository = StudentClassroomsRepository(
+      remoteDataSource: studentClassroomsRemoteDataSource,
+      localDataSource: classroomLocalDataSource,
+    );
+
+    final classroomRepository = ClassroomRepository(
       remoteDataSource: classroomRemoteDataSource,
       localDataSource: classroomLocalDataSource,
     );
@@ -127,7 +149,14 @@ class MyApp extends StatelessWidget {
     // SERVICES (DOMÍNIO)
     // -----------------------------
     final authService = AuthService(authRepository, authGoogleRepository);
-    final classroomService = ValidateCodeService(repository: validateCodeRepository);
+    final validateCodeService = ValidateCodeService(
+      repository: validateCodeRepository,
+    );
+    final getStudentClassroomsService = StudentClassroomsService(
+      repository: getStudentClassroomsRepository,
+    );
+
+    final classroomService = ClassroomService(repository: classroomRepository);
 
     // -----------------------------
     // MATERIAL APP WRAPPER
@@ -138,7 +167,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LoginButtonsProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
 
+        // -----------------------------
         // AUTH
+        // -----------------------------
         ChangeNotifierProvider<AuthProvider>(
           create: (_) {
             final provider = AuthProvider(authService: authService);
@@ -147,19 +178,43 @@ class MyApp extends StatelessWidget {
           },
         ),
 
+        // -----------------------------
         // CADASTRO
+        // -----------------------------
         ChangeNotifierProvider<RegisterProvider>(
           create: (_) {
-            final registerRemoteDataSource = RegisterRemoteDataSource(apiClient);
-            final registerRepository = RegisterRepository(remote: registerRemoteDataSource);
-            final registerService = RegisterService(repository: registerRepository);
+            final registerRemoteDataSource = RegisterRemoteDataSource(
+              apiClient,
+            );
+            final registerRepository = RegisterRepository(
+              remote: registerRemoteDataSource,
+            );
+            final registerService = RegisterService(
+              repository: registerRepository,
+            );
             return RegisterProvider(service: registerService);
           },
         ),
 
-        // VALIDAÇÃO DE CÓDIGO DA CLASSROOM
+        // -----------------------------
+        // CLASSROOM
+        // -----------------------------
         ChangeNotifierProvider<ValidateCodeProvider>(
-          create: (_) => ValidateCodeProvider(service: classroomService),
+          create: (_) => ValidateCodeProvider(service: validateCodeService),
+        ),
+
+        ChangeNotifierProvider<StudentClassroomsProvider>(
+          create: (_) =>
+              StudentClassroomsProvider(service: getStudentClassroomsService),
+        ),
+
+        ChangeNotifierProvider<StudentClassroomsDecisionProvider>(
+          create: (_) => StudentClassroomsDecisionProvider(
+            service: getStudentClassroomsService,
+          ),
+        ),
+        ChangeNotifierProvider<ClassroomProvider>(
+          create: (_) => ClassroomProvider(service: classroomService),
         ),
       ],
 
@@ -174,7 +229,10 @@ class MyApp extends StatelessWidget {
               final mq = MediaQuery.of(context);
               return MediaQuery(
                 data: mq.copyWith(
-                  textScaler: mq.textScaler.clamp(minScaleFactor: 0.8, maxScaleFactor: 2.0),
+                  textScaler: mq.textScaler.clamp(
+                    minScaleFactor: 0.8,
+                    maxScaleFactor: 2.0,
+                  ),
                 ),
                 child: child!,
               );
