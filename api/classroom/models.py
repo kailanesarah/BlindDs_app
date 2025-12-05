@@ -1,7 +1,9 @@
-from django.db import models
-import uuid
-import random
+import secrets
 import string
+import uuid
+
+from django.db import models
+
 from users.models import CustomUser
 
 
@@ -54,12 +56,20 @@ class ClassroomModel(models.Model):
         help_text="Data e hora da última atualização da sala",
     )
 
-    user = models.ForeignKey(
+    professor = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
         related_name="classrooms",
-        verbose_name="Usuário",
+        verbose_name="Professor Criador",
         help_text="Usuário que criou a sala",
+    )
+
+    students = models.ManyToManyField(
+        CustomUser,
+        related_name="enrolled_classrooms",
+        blank=True,
+        verbose_name="Alunos da Sala",
+        help_text="Lista de alunos matriculados na sala",
     )
 
     status = models.CharField(
@@ -70,17 +80,26 @@ class ClassroomModel(models.Model):
         help_text="Status atual da sala (ativa ou inativa)",
     )
 
-    def generate_code(self):
-        return "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Sala"
+        verbose_name_plural = "Salas"
+
+    @staticmethod
+    def generate_unique_code():
+        """Gera um código único de 6 caracteres."""
+        alphabet = string.ascii_uppercase + string.digits
+        return "".join(secrets.choice(alphabet) for _ in range(6))
 
     def save(self, *args, **kwargs):
         if not self.code:
-            new_code = self.generate_code()
-
-            while ClassroomModel.objects.filter(code=new_code).exists():
-                new_code = self.generate_code()
-
-            self.code = new_code
+            for _ in range(10):  # tenta 10 códigos diferentes
+                new_code = self.generate_unique_code()
+                if not ClassroomModel.objects.filter(code=new_code).exists():
+                    self.code = new_code
+                    break
+            else:
+                raise ValueError("Não foi possível gerar um código único para a sala.")
 
         super().save(*args, **kwargs)
 

@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from classroom.models import ClassroomModel
+from rest_framework import serializers
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "status",
-            "user",
+            "professor",
             "user_id",
             "user_email",
         ]
@@ -27,7 +27,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "status",
-            "user",
+            "professor",
         ]
 
     def validate_name(self, value):
