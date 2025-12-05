@@ -14,7 +14,7 @@ class AuthProvider extends BaseProvider {
   // Getters públicos para acesso da UI
   UserEntity? get currentUser => _currentUser;
   bool get isLoggedIn => _currentUser?.accessToken.isNotEmpty ?? false;
- 
+
   /// Carrega dados do Drift
   Future<void> init() async {
     setLoading(true);
@@ -71,17 +71,19 @@ class AuthProvider extends BaseProvider {
     }
   }
 
-  Future<void> logout() async {
+  Future<bool> logout() async {
     setLoading(true);
     clearError();
 
     try {
       await _authService.signOut();
 
-      // Limpa o estado
       _currentUser = null;
+
+      return true;
     } catch (e) {
       setError(e.toString().replaceAll("Exception: ", ""));
+      return false;
     } finally {
       setLoading(false);
       notifyListeners();
