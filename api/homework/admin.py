@@ -6,16 +6,26 @@ from homework.models import HomeworkModel
 class HomeworkAdmin(admin.ModelAdmin):
     list_display = (
         "name",
-        "user",
+        "professor",
+        "classroom",
+        "deadline",
         "created_at",
-        "updated_at",
     )
 
     list_display_links = ("name",)
 
-    search_fields = ("name", "user__username")
+    search_fields = (
+        "name",
+        "professor__username",
+        "classroom__name",
+    )
 
-    list_filter = ("created_at", "user")
+    list_filter = (
+        "created_at",
+        "professor",
+        "classroom",
+        "deadline",
+    )
 
     readonly_fields = ("id", "created_at", "updated_at")
 
@@ -33,9 +43,9 @@ class HomeworkAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Usuário e Sala",
+            "Professor e Sala",
             {
-                "fields": ("user", "classroom"),
+                "fields": ("professor", "classroom"),
             },
         ),
         (
