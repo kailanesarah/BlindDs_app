@@ -4,14 +4,20 @@ import 'package:flutter/material.dart';
 class MainLayout extends StatelessWidget {
   // O widget dinâmico que será o conteúdo principal da tela.
   final Widget bodyContent;
+  final Widget? floatingActionButton;
 
-  const MainLayout({super.key, required this.bodyContent});
+  const MainLayout({
+    super.key,
+    required this.bodyContent,
+    this.floatingActionButton,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppHeader(),
       body: Padding(padding: EdgeInsets.all(16.0), child: bodyContent),
+      floatingActionButton: floatingActionButton,
     );
   }
 }
