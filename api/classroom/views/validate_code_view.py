@@ -1,10 +1,11 @@
+import logging
+
 from classroom.models import ClassroomModel
 from classroom.serializers import ClassroomSerializer
-from rest_framework.views import APIView
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
-import logging
+from rest_framework.views import APIView
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +15,7 @@ class ClassroomSearchView(APIView):
 
     def post(self, request):
         try:
+            user = request.user
             code = request.data.get("code", "").strip().upper()
 
             if not code:
@@ -30,23 +32,30 @@ class ClassroomSearchView(APIView):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-            """ # Criar ou recuperar o histórico (impede duplicação) -> 
-            Historico de quais alunos entreram na sala?
-            created = ClassroomModel.objects.get_or_create(
-                user=user, homework=homework
-            )
+            if user.user_type != "student":
+                return Response(
+                    {"message": "Somente alunos podem entrar em salas usando código."},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
 
-            serializer = ClassroomSerializer(homework)
-
-            return Response(
-                {"activity": serializer.data, "added_to_history": created},
-                status=status.HTTP_200_OK,
-            )
-            """
+            if classroom.students.filter(id=user.id).exists():
+                already_added = True
+            else:
+                classroom.students.add(user)
+                already_added = False
 
             serializer = ClassroomSerializer(classroom)
+
             return Response(
-                {"classroom": serializer.data},
+                {
+                    "classroom": serializer.data,
+                    "added_to_classroom": not already_added,
+                    "message": (
+                        "Aluno adicionado à sala."
+                        if not already_added
+                        else "Aluno já estava na sala."
+                    ),
+                },
                 status=status.HTTP_200_OK,
             )
 

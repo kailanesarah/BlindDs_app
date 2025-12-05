@@ -1,10 +1,11 @@
+import logging
+
 from classroom.models import ClassroomModel
 from classroom.serializers import ClassroomSerializer
+from rest_framework import status
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -16,18 +17,9 @@ class ClassroomRetrieveView(RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         try:
+            classroom = self.get_object()
 
-            pk = kwargs.get("pk")
-
-            try:
-                homework = ClassroomModel.objects.get(id=pk)
-            except ClassroomModel.DoesNotExist:
-                return Response(
-                    {"message": "Sala de aula não encontrada."},
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-
-            serializer = self.get_serializer(homework)
+            serializer = self.get_serializer(classroom)
 
             return Response(
                 {
@@ -37,6 +29,11 @@ class ClassroomRetrieveView(RetrieveAPIView):
                 status=status.HTTP_200_OK,
             )
 
+        except ClassroomModel.DoesNotExist:
+            return Response(
+                {"message": "Sala de aula não encontrada."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
         except Exception as e:
             logger.error(f"Erro ao recuperar sala de aula: {str(e)}")
             return Response(
